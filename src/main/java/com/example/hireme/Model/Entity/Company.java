@@ -1,0 +1,46 @@
+package com.example.hireme.Model.Entity;
+
+import com.example.hireme.Model.CompanyPriority;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name="companies")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Company {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String fiscal_id;
+    private Integer phone_number;
+    private String email;
+    private String website;
+
+    @Enumerated(value = EnumType.STRING)
+    private CompanyPriority priority;
+
+    private String address;
+    private Boolean active;
+
+    private LocalDateTime created_at;
+
+    public Company(String name, String fiscal_id, Integer phone_number, String email, String website, CompanyPriority priority, String address, Boolean active, LocalDateTime created_at) {
+        this.name = name;
+        this.fiscal_id = fiscal_id;
+        this.phone_number = phone_number;
+        this.email = email;
+        this.website = website;
+        this.priority = priority;
+        this.address = address;
+        this.active = active;
+        this.created_at = created_at;
+    }
+}
