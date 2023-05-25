@@ -1,5 +1,6 @@
 package com.example.hireme.Model.Entity;
 
+import com.example.hireme.Model.Profile;
 import com.example.hireme.Model.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,10 @@ public class User {
     private Boolean active;
 
     private LocalDateTime created_at;
+
+    @OneToOne(mappedBy = "user" ,cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Profile profile;
 
     public User(String email, String password, LocalDateTime email_verified_at, Role role, Boolean active, LocalDateTime created_at) {
         this.email = email;

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "employers_profiles")
 @NoArgsConstructor
-@AllArgsConstructor
 public class EmployerProfile extends Profile {
 
 }
