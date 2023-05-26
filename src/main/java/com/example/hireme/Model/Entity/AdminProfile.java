@@ -2,14 +2,16 @@ package com.example.hireme.Model.Entity;
 
 import com.example.hireme.Model.Profile;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "admins_profiles")
 @NoArgsConstructor
+@Data
+@Setter
+@Getter
 public class AdminProfile extends Profile {
 
     @Id

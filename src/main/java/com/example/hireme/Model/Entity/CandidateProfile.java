@@ -4,8 +4,7 @@ import com.example.hireme.Model.JobType;
 import com.example.hireme.Model.Profile;
 import com.example.hireme.Model.StudyDegree;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +13,9 @@ import java.util.List;
 @Table(name = "candidates_profiles")
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@Setter
+@Getter
 public class CandidateProfile extends Profile {
 
     @Id

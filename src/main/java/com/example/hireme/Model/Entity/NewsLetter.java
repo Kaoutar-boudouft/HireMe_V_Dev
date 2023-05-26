@@ -1,15 +1,15 @@
 package com.example.hireme.Model.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name="news_letters")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
 public class NewsLetter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

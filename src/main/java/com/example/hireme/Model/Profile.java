@@ -3,9 +3,7 @@ package com.example.hireme.Model;
 import com.example.hireme.Model.Entity.City;
 import com.example.hireme.Model.Entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Setter
+@Getter
 public abstract class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

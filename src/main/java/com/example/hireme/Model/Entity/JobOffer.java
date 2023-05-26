@@ -3,9 +3,7 @@ package com.example.hireme.Model.Entity;
 import com.example.hireme.Model.Currency;
 import com.example.hireme.Model.JobType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +13,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
 public class JobOffer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

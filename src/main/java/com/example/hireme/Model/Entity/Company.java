@@ -3,9 +3,7 @@ package com.example.hireme.Model.Entity;
 import com.example.hireme.Model.CompanyPriority;
 import com.example.hireme.Model.Profile;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +12,8 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

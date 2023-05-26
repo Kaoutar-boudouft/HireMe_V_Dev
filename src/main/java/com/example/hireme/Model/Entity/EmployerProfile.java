@@ -2,8 +2,7 @@ package com.example.hireme.Model.Entity;
 
 import com.example.hireme.Model.Profile;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +10,9 @@ import java.time.LocalDateTime;
 @Table(name = "employers_profiles")
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@Setter
+@Getter
 public class EmployerProfile extends Profile {
 
     @Id

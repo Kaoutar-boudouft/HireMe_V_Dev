@@ -2,9 +2,7 @@ package com.example.hireme.Model.Entity;
 
 import com.example.hireme.Model.Profile;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -13,6 +11,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
 public class BlogTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
