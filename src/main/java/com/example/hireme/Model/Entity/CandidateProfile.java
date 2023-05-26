@@ -15,6 +15,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CandidateProfile extends Profile {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
     @Enumerated(value = EnumType.STRING)
     private StudyDegree study_degree;
 

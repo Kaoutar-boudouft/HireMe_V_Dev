@@ -1,10 +1,7 @@
 package com.example.hireme.Model.Entity;
 
 import com.example.hireme.Model.Profile;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +10,12 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "employers_profiles")
 @NoArgsConstructor
+@AllArgsConstructor
 public class EmployerProfile extends Profile {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "company_id")
