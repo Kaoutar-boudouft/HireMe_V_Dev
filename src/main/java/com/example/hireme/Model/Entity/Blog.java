@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name="blogs")
 @Data
@@ -21,6 +23,9 @@ public class Blog {
 
     @Enumerated(value = EnumType.STRING)
     private Language language;
+
+    @ManyToMany(mappedBy = "blogs")
+    List<BlogTag> tags;
 
     public Blog(String title, String content, Language language) {
         this.title = title;

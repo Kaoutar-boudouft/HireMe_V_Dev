@@ -24,6 +24,16 @@ public class City {
     @OneToMany(mappedBy="city")
     private List<Profile> profiles;
 
+    @OneToMany(mappedBy="city")
+    private List<JobOffer> jobs_offers;
+
+    @OneToMany(mappedBy="city")
+    private List<Company> companies;
+
+    @ManyToOne
+    @JoinColumn(name="country_id", nullable=false)
+    private Country country;
+
     public City(String name, Boolean active) {
         this.name = name;
         Active = active;

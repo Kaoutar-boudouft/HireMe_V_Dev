@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name="jobs_offers")
@@ -32,6 +33,17 @@ public class JobOffer {
     private Boolean active;
 
     private LocalDateTime published_at;
+
+    @ManyToOne
+    @JoinColumn(name="category_id", nullable=false)
+    private OfferCategory category;
+
+    @ManyToOne
+    @JoinColumn(name="city_id", nullable=false)
+    private City city;
+
+    @ManyToMany(mappedBy = "job_offers")
+    List<CandidateProfile> candidates;
 
     public JobOffer(String title, String description, Double salary, JobType type, Currency currency, Boolean active, LocalDateTime published_at) {
         this.title = title;

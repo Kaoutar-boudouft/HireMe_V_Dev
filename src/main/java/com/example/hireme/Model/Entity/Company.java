@@ -1,6 +1,7 @@
 package com.example.hireme.Model.Entity;
 
 import com.example.hireme.Model.CompanyPriority;
+import com.example.hireme.Model.Profile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,6 +32,14 @@ public class Company {
     private Boolean active;
 
     private LocalDateTime created_at;
+
+    @OneToOne(mappedBy = "company" ,cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private EmployerProfile employerProfile;
+
+    @ManyToOne
+    @JoinColumn(name="city_id", nullable=false)
+    private City city;
 
     public Company(String name, String fiscal_id, Integer phone_number, String email, String website, CompanyPriority priority, String address, Boolean active, LocalDateTime created_at) {
         this.name = name;

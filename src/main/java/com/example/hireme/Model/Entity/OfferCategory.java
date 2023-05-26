@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name="offers_categories")
 @Data
@@ -16,6 +18,9 @@ public class OfferCategory {
     private Long id;
 
     private String label;
+
+    @OneToMany(mappedBy="category")
+    private List<JobOffer> jobs_offers;
 
     public OfferCategory(String label) {
         this.label = label;
