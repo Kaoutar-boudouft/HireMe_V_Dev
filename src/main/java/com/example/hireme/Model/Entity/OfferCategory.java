@@ -22,6 +22,11 @@ public class OfferCategory {
     @OneToMany(mappedBy="category")
     private List<JobOffer> jobs_offers;
 
+    public OfferCategory(String label, List<JobOffer> jobs_offers) {
+        this.label = label;
+        this.jobs_offers = jobs_offers;
+    }
+
     public OfferCategory(String label) {
         this.label = label;
     }

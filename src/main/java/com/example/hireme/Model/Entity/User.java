@@ -35,6 +35,16 @@ public class User {
     @PrimaryKeyJoinColumn
     private Profile profile;
 
+    public User(String email, String password, LocalDateTime email_verified_at, Role role, Boolean active, LocalDateTime created_at, Profile profile) {
+        this.email = email;
+        this.password = password;
+        this.email_verified_at = email_verified_at;
+        this.role = role;
+        this.active = active;
+        this.created_at = created_at;
+        this.profile = profile;
+    }
+
     public User(String email, String password, LocalDateTime email_verified_at, Role role, Boolean active, LocalDateTime created_at) {
         this.email = email;
         this.password = password;

@@ -28,6 +28,24 @@ public class CandidateProfile extends Profile {
     @JoinTable(name = "candidatures", joinColumns = @JoinColumn(name = "candidate_profile_id"), inverseJoinColumns = @JoinColumn(name = "offer_id"))
     List<JobOffer> job_offers;
 
+    public CandidateProfile(String first_name, String last_name, LocalDateTime birth_date, String id_number, Integer mobile_number, User user, City city, StudyDegree study_degree, JobType specialisation, String motivation_letter, String experience, List<JobOffer> job_offers) {
+        super(first_name, last_name, birth_date, id_number, mobile_number, user, city);
+        this.study_degree = study_degree;
+        this.specialisation = specialisation;
+        this.motivation_letter = motivation_letter;
+        this.experience = experience;
+        this.job_offers = job_offers;
+    }
+
+    public CandidateProfile(String first_name, String last_name, LocalDateTime birth_date, String id_number, Integer mobile_number, StudyDegree study_degree, JobType specialisation, String motivation_letter, String experience, List<JobOffer> job_offers) {
+        super(first_name, last_name, birth_date, id_number, mobile_number);
+        this.study_degree = study_degree;
+        this.specialisation = specialisation;
+        this.motivation_letter = motivation_letter;
+        this.experience = experience;
+        this.job_offers = job_offers;
+    }
+
     public CandidateProfile(String first_name, String last_name, LocalDateTime birth_date, String id_number, Integer mobile_number, StudyDegree study_degree, JobType specialisation, String motivation_letter, String experience) {
         super(first_name, last_name, birth_date, id_number, mobile_number);
         this.study_degree = study_degree;

@@ -27,6 +27,13 @@ public class Blog {
     @ManyToMany(mappedBy = "blogs")
     List<BlogTag> tags;
 
+    public Blog(String title, String content, Language language, List<BlogTag> tags) {
+        this.title = title;
+        this.content = content;
+        this.language = language;
+        this.tags = tags;
+    }
+
     public Blog(String title, String content, Language language) {
         this.title = title;
         this.content = content;

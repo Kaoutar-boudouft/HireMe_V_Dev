@@ -33,6 +33,16 @@ public abstract class Profile {
     @JoinColumn(name="city_id", nullable=false)
     private City city;
 
+    public Profile(String first_name, String last_name, LocalDateTime birth_date, String id_number, Integer mobile_number, User user, City city) {
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.birth_date = birth_date;
+        this.id_number = id_number;
+        this.mobile_number = mobile_number;
+        this.user = user;
+        this.city = city;
+    }
+
     public Profile(String first_name, String last_name, LocalDateTime birth_date, String id_number, Integer mobile_number) {
         this.first_name = first_name;
         this.last_name = last_name;

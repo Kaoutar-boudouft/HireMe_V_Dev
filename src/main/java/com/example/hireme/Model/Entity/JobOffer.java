@@ -45,6 +45,19 @@ public class JobOffer {
     @ManyToMany(mappedBy = "job_offers")
     List<CandidateProfile> candidates;
 
+    public JobOffer(String title, String description, Double salary, JobType type, Currency currency, Boolean active, LocalDateTime published_at, OfferCategory category, City city, List<CandidateProfile> candidates) {
+        this.title = title;
+        this.description = description;
+        this.salary = salary;
+        this.type = type;
+        this.currency = currency;
+        this.active = active;
+        this.published_at = published_at;
+        this.category = category;
+        this.city = city;
+        this.candidates = candidates;
+    }
+
     public JobOffer(String title, String description, Double salary, JobType type, Currency currency, Boolean active, LocalDateTime published_at) {
         this.title = title;
         this.description = description;
