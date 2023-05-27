@@ -1,4 +1,4 @@
-package com.example.hireme.Service;
+package com.example.hireme.Service.Auth;
 
 import com.example.hireme.Model.Entity.User;
 import io.jsonwebtoken.Claims;

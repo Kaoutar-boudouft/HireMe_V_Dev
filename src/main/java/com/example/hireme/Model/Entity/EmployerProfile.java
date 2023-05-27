@@ -4,6 +4,7 @@ import com.example.hireme.Model.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,12 +24,12 @@ public class EmployerProfile extends Profile {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    public EmployerProfile(String first_name, String last_name, LocalDateTime birth_date, String id_number, Integer mobile_number, User user, City city, Company company) {
+    public EmployerProfile(String first_name, String last_name, LocalDate birth_date, String id_number, Integer mobile_number, User user, City city, Company company) {
         super(first_name, last_name, birth_date, id_number, mobile_number, user, city);
         this.company = company;
     }
 
-    public EmployerProfile(String first_name, String last_name, LocalDateTime birth_date, String id_number, Integer mobile_number, Company company) {
+    public EmployerProfile(String first_name, String last_name, LocalDate birth_date, String id_number, Integer mobile_number, Company company) {
         super(first_name, last_name, birth_date, id_number, mobile_number);
         this.company = company;
     }

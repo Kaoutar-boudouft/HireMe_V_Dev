@@ -4,6 +4,7 @@ import com.example.hireme.Model.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,11 +19,11 @@ public class AdminProfile extends Profile {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    public AdminProfile(String first_name, String last_name, LocalDateTime birth_date, String id_number, Integer mobile_number, User user, City city) {
+    public AdminProfile(String first_name, String last_name, LocalDate birth_date, String id_number, Integer mobile_number, User user, City city) {
         super(first_name, last_name, birth_date, id_number, mobile_number, user, city);
     }
 
-    public AdminProfile(String first_name, String last_name, LocalDateTime birth_date, String id_number, Integer mobile_number) {
+    public AdminProfile(String first_name, String last_name, LocalDate birth_date, String id_number, Integer mobile_number) {
         super(first_name, last_name, birth_date, id_number, mobile_number);
     }
 }

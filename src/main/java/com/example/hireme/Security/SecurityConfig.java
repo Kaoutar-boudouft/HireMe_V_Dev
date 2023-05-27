@@ -29,9 +29,9 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests (
                         authorizeConfig -> {authorizeConfig.requestMatchers("/").permitAll();
-                        authorizeConfig.requestMatchers("/","/login","/assets/**","/sass/**","/scss/**").permitAll();
+                        authorizeConfig.requestMatchers("/","/login","/Registration/**","/assets/**","/sass/**","/scss/**").permitAll();
                         //authorizeConfig.requestMatchers("/login").permitAll();
-                        authorizeConfig.anyRequest().authenticated();
+                        //authorizeConfig.anyRequest().authenticated();
         }).build();
     }
 }
