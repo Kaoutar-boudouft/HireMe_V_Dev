@@ -79,7 +79,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.email_verified_at!=null;
+        return this.active;
     }
 
     @Override
@@ -89,6 +89,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.active;
+        return this.email_verified_at!=null;
     }
 }

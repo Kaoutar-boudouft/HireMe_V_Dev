@@ -2,8 +2,10 @@ package com.example.hireme.Service;
 
 import com.example.hireme.Exceptions.UserAlreadyExistException;
 import com.example.hireme.Model.Entity.User;
+import com.example.hireme.Model.Entity.VerificationToken;
 import com.example.hireme.Model.Role;
 import com.example.hireme.Repository.UserRepository;
+import com.example.hireme.Repository.VerificationTokenRepository;
 import com.example.hireme.Requests.CandidateRegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +25,7 @@ public class UserService  implements UserDetailsService{
     private final UserRepository userRepository;
     private final CandidateProfileService candidateProfileService;
     private final PasswordEncoder passwordEncoder;
+    private final VerificationTokenRepository verificationTokenRepository;
 
     public List<User> getUsers(){
         return userRepository.findAll();
@@ -50,7 +53,12 @@ public class UserService  implements UserDetailsService{
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("User with email "+email+" not found!"));
+    }
+
+    public void saveVerificationToken(User candidate, String verificationToken) {
+        VerificationToken token = new VerificationToken(verificationToken,candidate);
+        verificationTokenRepository.save(token);
     }
 }

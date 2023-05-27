@@ -30,7 +30,7 @@ public abstract class Profile {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name="city_id", nullable=false)
+    @JoinColumn(name="city_id", nullable=true)
     private City city;
 
     public Profile(String first_name, String last_name, LocalDate birth_date, String id_number, Integer mobile_number, User user, City city) {

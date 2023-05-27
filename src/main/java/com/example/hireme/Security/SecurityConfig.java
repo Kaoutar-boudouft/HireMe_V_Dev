@@ -26,9 +26,11 @@ public class SecurityConfig {
                 .formLogin(formLogin -> formLogin.loginPage("/login").permitAll().defaultSuccessUrl("/",true))
                 .authorizeHttpRequests (
                         authorizeConfig -> {
+                            authorizeConfig.requestMatchers("/static/**","/assets/**","/sass/**","/scss/**").permitAll();
                             authorizeConfig.requestMatchers("/registration/**").permitAll();
-                            authorizeConfig.requestMatchers("/","/login","/registration/**","/assets/**","/sass/**","/scss/**").permitAll();
-                        //authorizeConfig.anyRequest().authenticated();
+                            authorizeConfig.requestMatchers("/","/login").permitAll();
+
+                            //authorizeConfig.anyRequest().authenticated();
         }).logout(logout -> logout.logoutUrl("/logout").clearAuthentication(true)
                         .deleteCookies("JSESSIONID").logoutSuccessUrl("/")).build();
     }
