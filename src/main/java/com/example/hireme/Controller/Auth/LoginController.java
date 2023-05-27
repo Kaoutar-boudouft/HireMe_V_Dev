@@ -9,4 +9,9 @@ public class LoginController {
     public String getLoginPage(){
         return "Auth/login";
     }
+
+    @GetMapping("/registration/candidate")
+    public String test(){
+        return "Auth/candidateRegistration";
+    }
 }

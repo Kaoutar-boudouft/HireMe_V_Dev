@@ -2,10 +2,12 @@ package com.example.hireme.Security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,11 +28,13 @@ public class SecurityConfig {
         /*return http.httpBasic(httpBasic -> {} ).authorizeHttpRequests(authorizeHttpRequests ->
                 authorizeHttpRequests.requestMatchers("login","/login","/assets/**","/sass/**","/scss/**").permitAll()).formLogin(formLogin -> formLogin.loginPage("/login").permitAll()).build();
    */
-        return http
+        return http.csrf(csrf -> csrf.disable())
+                .formLogin(formLogin -> formLogin.loginPage("/login").permitAll().defaultSuccessUrl("/",true))
                 .authorizeHttpRequests (
-                        authorizeConfig -> {authorizeConfig.requestMatchers("/").permitAll();
-                        authorizeConfig.requestMatchers("/","/login","/Registration/**","/assets/**","/sass/**","/scss/**").permitAll();
-                        //authorizeConfig.requestMatchers("/login").permitAll();
+                        authorizeConfig -> {
+                            authorizeConfig.requestMatchers(HttpMethod.POST,"/registration/**").permitAll();
+                            authorizeConfig.requestMatchers(HttpMethod.GET,"/registration/**").permitAll();
+                            authorizeConfig.requestMatchers("/","/login","/registration/**","/assets/**","/sass/**","/scss/**").permitAll();
                         //authorizeConfig.anyRequest().authenticated();
         }).build();
     }
