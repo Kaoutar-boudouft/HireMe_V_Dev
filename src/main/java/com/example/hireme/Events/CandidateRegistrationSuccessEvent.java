@@ -1,4 +1,4 @@
-package com.example.hireme.Events.Listener;
+package com.example.hireme.Events;
 
 import com.example.hireme.Model.Entity.User;
 import lombok.AllArgsConstructor;

@@ -38,7 +38,7 @@ public class Company {
     private EmployerProfile employerProfile;
 
     @ManyToOne
-    @JoinColumn(name="city_id", nullable=false)
+    @JoinColumn(name="city_id", nullable=true)
     private City city;
 
     public Company(String name, String fiscal_id, Integer phone_number, String email, String website, CompanyPriority priority, String address, Boolean active, LocalDateTime created_at, EmployerProfile employerProfile, City city) {
