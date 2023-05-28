@@ -4,6 +4,7 @@ import com.example.hireme.Events.Listener.CandidateRegistrationSuccessEvent;
 import com.example.hireme.Model.Entity.User;
 import com.example.hireme.Requests.CandidateRegisterRequest;
 import com.example.hireme.Service.UserService;
+import com.example.hireme.Service.VerificationTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -11,12 +12,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @AllArgsConstructor
 public class LoginController {
     private final UserService userService;
     private final ApplicationEventPublisher publisher;
+    private final VerificationTokenService verificationTokenService;
     @GetMapping("/login")
     public String getLoginPage(){
         return "Auth/login";
@@ -37,6 +40,17 @@ public class LoginController {
         }
         else {
             return "redirect:/registration/candidate";
+        }
+    }
+
+    @GetMapping("/registration/candidate/verify-token")
+    public String verifyEmailByToken(@RequestParam("token") String token){
+        String verificationResult = verificationTokenService.verifyToken(token);
+        if (verificationResult.equals("")){
+            return "redirect:/login";
+        }
+        else{
+            return "redirect:/error";
         }
     }
 
