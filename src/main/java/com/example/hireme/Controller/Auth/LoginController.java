@@ -1,10 +1,11 @@
 package com.example.hireme.Controller.Auth;
 
-import com.example.hireme.Events.CandidateRegistrationSuccessEvent;
-import com.example.hireme.Events.EmployerRegistrationSuccessEvent;
+import com.example.hireme.Events.RegistrationSuccessEvent;
+import com.example.hireme.Exceptions.UserAlreadyExistException;
 import com.example.hireme.Model.Entity.User;
 import com.example.hireme.Requests.CandidateRegisterRequest;
 import com.example.hireme.Requests.EmployerRegisterRequest;
+import com.example.hireme.Service.AppService;
 import com.example.hireme.Service.UserService;
 import com.example.hireme.Service.VerificationTokenService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ public class LoginController {
     private final UserService userService;
     private final ApplicationEventPublisher publisher;
     private final VerificationTokenService verificationTokenService;
+    private final AppService appService;
     @GetMapping("/login")
     public String getLoginPage(){
         return "Auth/login";
@@ -34,13 +36,12 @@ public class LoginController {
     @PostMapping("/registration/candidate")
     public String registerCandidateWithItsProfile(CandidateRegisterRequest candidateRegisterRequest,
                                                   final HttpServletRequest httpServletRequest){
-        User user = userService.registerCandidateUser(candidateRegisterRequest);
-        if (user!=null){
-            publisher.publishEvent(new CandidateRegistrationSuccessEvent(user,appUrl(httpServletRequest)));
-            return "redirect:/login";
+        try {
+            User user = userService.registerCandidateUser(candidateRegisterRequest);
+            return afterRegisterRedirect(user,httpServletRequest,"candidate");
         }
-        else {
-            return "redirect:/registration/candidate";
+        catch (UserAlreadyExistException e){
+            return  "redirect:/login";
         }
     }
 
@@ -52,13 +53,12 @@ public class LoginController {
     @PostMapping("/registration/employer")
     public String registerEmployerWithItsProfile(EmployerRegisterRequest employerRegisterRequest,
                                                  final HttpServletRequest httpServletRequest){
-        User user = userService.registerEmployerUser(employerRegisterRequest);
-        if (user!=null){
-            publisher.publishEvent(new EmployerRegistrationSuccessEvent(user,appUrl(httpServletRequest)));
-            return "redirect:/login";
+        try {
+            User user = userService.registerEmployerUser(employerRegisterRequest);
+            return afterRegisterRedirect(user,httpServletRequest,"employer");
         }
-        else {
-            return "redirect:/registration/employer";
+        catch (UserAlreadyExistException e){
+            return  "redirect:/login";
         }
     }
 
@@ -73,8 +73,17 @@ public class LoginController {
         }
     }
 
-    private String appUrl(HttpServletRequest httpServletRequest) {
-        return "http://"+httpServletRequest.getServerName()+":"+httpServletRequest
-                .getServerPort()+httpServletRequest.getContextPath();
+    public String afterRegisterRedirect(User user,HttpServletRequest httpServletRequest,String type){
+        if (user!=null){
+            publisher.publishEvent(new RegistrationSuccessEvent(user,appService.appUrl(httpServletRequest)));
+            return "redirect:/login";
+        }
+        else {
+            return "redirect:/registration/"+type;
+        }
     }
+
+
+
+
 }
