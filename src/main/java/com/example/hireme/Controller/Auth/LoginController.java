@@ -40,41 +40,61 @@ public class LoginController {
     }
 
     @GetMapping("/registration/candidate")
-    public String getCandidateRegisterPage(){
+    public String getCandidateRegisterPage(Model model){
+        model.addAttribute("candidateRegisterRequest" ,new CandidateRegisterRequest());
         return "Auth/candidate_register";
     }
 
     @PostMapping("/registration/candidate")
-    public String registerCandidateWithItsProfile(CandidateRegisterRequest candidateRegisterRequest,
+    public String registerCandidateWithItsProfile(@Valid CandidateRegisterRequest candidateRegisterRequest,
+                                                  BindingResult bindingResult,
                                                   final HttpServletRequest httpServletRequest,
                                                   RedirectAttributes redirectAttributes,Locale locale){
-        try {
-            User user = userService.registerCandidateUser(candidateRegisterRequest);
-            return afterRegisterRedirect(user,httpServletRequest,"candidate",redirectAttributes,locale);
+        if (bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("error", bindingResult);
+            redirectAttributes.addFlashAttribute("candidateRegisterRequest", candidateRegisterRequest);
+            return "Auth/candidate_register";
         }
-        catch (UserAlreadyExistException e){
-            redirectAttributes.addFlashAttribute("warningRegister",languageConfig.messageSource().getMessage("email_exists",new Object[] {}, locale));
-            return "redirect:/login";
+        else {
+            try {
+                User user = userService.registerCandidateUser(candidateRegisterRequest);
+                return afterRegisterRedirect(user,httpServletRequest,"candidate",redirectAttributes,locale);
+            }
+            catch (UserAlreadyExistException e){
+                redirectAttributes.addFlashAttribute("warningRegister",languageConfig.messageSource().getMessage("email_exists",new Object[] {}, locale));
+                return "redirect:/login";
+            }
         }
+
     }
 
     @GetMapping("/registration/employer")
-    public String getEmployerRegisterPage(){
+    public String getEmployerRegisterPage(Model model){
+        model.addAttribute("employerRegisterRequest" ,new EmployerRegisterRequest());
         return "Auth/employer_register";
     }
 
     @PostMapping("/registration/employer")
-    public String registerEmployerWithItsProfile(EmployerRegisterRequest employerRegisterRequest,
+    public String registerEmployerWithItsProfile(@Valid EmployerRegisterRequest employerRegisterRequest,
+                                                 BindingResult bindingResult,
                                                  final HttpServletRequest httpServletRequest,
                                                  RedirectAttributes redirectAttributes,Locale locale){
-        try {
-            User user = userService.registerEmployerUser(employerRegisterRequest);
-            return afterRegisterRedirect(user,httpServletRequest,"employer",redirectAttributes,locale);
+        if (bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("error", bindingResult);
+            redirectAttributes.addFlashAttribute("employerRegisterRequest", employerRegisterRequest);
+            return "Auth/employer_register";
         }
-        catch (UserAlreadyExistException e){
-            redirectAttributes.addFlashAttribute("warningRegister",languageConfig.messageSource().getMessage("email_exists",new Object[] {}, locale));
-            return "redirect:/login";
+        else {
+            try {
+                User user = userService.registerEmployerUser(employerRegisterRequest);
+                return afterRegisterRedirect(user,httpServletRequest,"employer",redirectAttributes,locale);
+            }
+            catch (UserAlreadyExistException e){
+                redirectAttributes.addFlashAttribute("warningRegister",languageConfig.messageSource().getMessage("email_exists",new Object[] {}, locale));
+                return "redirect:/login";
+            }
         }
+
     }
 
     @GetMapping("/registration/verify-token")
