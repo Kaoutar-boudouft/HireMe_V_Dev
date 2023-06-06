@@ -1,6 +1,7 @@
 package com.example.hireme.Security;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,7 +24,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         return http.csrf(csrf -> csrf.disable())
-                .formLogin(formLogin -> formLogin.loginPage("/login").permitAll().defaultSuccessUrl("/",true))
+                .formLogin(formLogin -> formLogin.loginPage("/login").successHandler(loginSuccessHandler).permitAll())
                 .authorizeHttpRequests (
                         authorizeConfig -> {
                             authorizeConfig.requestMatchers("/static/**","/assets/**","/sass/**","/scss/**").permitAll();
@@ -34,6 +35,9 @@ public class SecurityConfig {
         }).logout(logout -> logout.logoutUrl("/logout").clearAuthentication(true)
                         .deleteCookies("JSESSIONID").logoutSuccessUrl("/")).build();
     }
+
+    @Autowired
+    private LoginSuccessHandler loginSuccessHandler;
 
 
 
