@@ -1,5 +1,6 @@
 package com.example.hireme.Security;
 
+import com.example.hireme.Model.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,9 +31,9 @@ public class SecurityConfig {
                             authorizeConfig.requestMatchers("/static/**","/assets/**","/sass/**","/scss/**").permitAll();
                             authorizeConfig.requestMatchers("/registration/**").permitAll();
                             authorizeConfig.requestMatchers("/","/login","/error","api/**").permitAll();
-                           // authorizeConfig.requestMatchers().authenticated();
-
-                            //authorizeConfig.anyRequest().authenticated();
+                            authorizeConfig.requestMatchers("/candidate/**").hasAuthority(Role.CANDIDATE.name());
+                            authorizeConfig.requestMatchers("/employer/**").hasAuthority(Role.EMPLOYER.name());
+                            authorizeConfig.requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name());
         }).logout(logout -> logout.logoutUrl("/logout").clearAuthentication(true)
                         .deleteCookies("JSESSIONID").logoutSuccessUrl("/")).build();
     }

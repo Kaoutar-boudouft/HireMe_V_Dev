@@ -1,6 +1,7 @@
 package com.example.hireme.Security;
 
 import com.example.hireme.Model.Entity.User;
+import com.example.hireme.Model.Role;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,7 +19,15 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         User user = (User) authentication.getPrincipal();
-        System.out.println(user.getRole());
-        super.onAuthenticationSuccess(request, response, authentication);
+        String redirectUrl = request.getContextPath();
+        if (user.getRole().equals(Role.CANDIDATE)){
+            redirectUrl += "/candidate/profile";
+        } else if (user.getRole().equals(Role.EMPLOYER)) {
+            redirectUrl += "/employer/profile";
+        }
+        else {
+            redirectUrl += "/admin/dashboard";
+        }
+        response.sendRedirect(redirectUrl);
     }
 }
