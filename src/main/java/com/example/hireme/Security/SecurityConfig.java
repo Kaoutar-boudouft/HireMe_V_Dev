@@ -29,7 +29,8 @@ public class SecurityConfig {
                         authorizeConfig -> {
                             authorizeConfig.requestMatchers("/static/**","/assets/**","/sass/**","/scss/**").permitAll();
                             authorizeConfig.requestMatchers("/registration/**").permitAll();
-                            authorizeConfig.requestMatchers("/","/login","/error").permitAll();
+                            authorizeConfig.requestMatchers("/","/login","/error","api/**").permitAll();
+                           // authorizeConfig.requestMatchers().authenticated();
 
                             //authorizeConfig.anyRequest().authenticated();
         }).logout(logout -> logout.logoutUrl("/logout").clearAuthentication(true)

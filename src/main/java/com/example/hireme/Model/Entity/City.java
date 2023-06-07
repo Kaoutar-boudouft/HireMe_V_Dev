@@ -20,7 +20,7 @@ public class City {
     private Long id;
 
     private String name;
-    private int Active;
+    private int active;
 
     @OneToMany(mappedBy="city")
     private List<Profile> profiles;
@@ -37,6 +37,6 @@ public class City {
 
     public City(String name, int active) {
         this.name = name;
-        Active = active;
+        active = active;
     }
 }

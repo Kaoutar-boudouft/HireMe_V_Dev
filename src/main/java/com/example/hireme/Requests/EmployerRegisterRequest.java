@@ -50,6 +50,9 @@ public class EmployerRegisterRequest {
     @NotNull()
     Long company_city;
 
+    @NotNull()
+    Long company_country;
+
     @NotEmpty()
     @Size(min = 3,max = 15)
     String first_name;

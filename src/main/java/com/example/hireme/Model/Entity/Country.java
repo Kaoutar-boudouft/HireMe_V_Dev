@@ -1,6 +1,7 @@
 package com.example.hireme.Model.Entity;
 
 import com.example.hireme.Model.Profile;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,7 @@ public class Country {
     private int active;
 
     @OneToMany(mappedBy="country")
+    @JsonIgnore
     private List<City> cities;
 
     public Country(String name, int active, List<City> cities) {
