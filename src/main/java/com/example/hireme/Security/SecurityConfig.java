@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .formLogin(formLogin -> formLogin.loginPage("/login").successHandler(loginSuccessHandler).permitAll())
                 .authorizeHttpRequests (
                         authorizeConfig -> {
-                            authorizeConfig.requestMatchers("/static/**","/assets/**","/sass/**","/scss/**").permitAll();
+                            authorizeConfig.requestMatchers("/static/**","/assets/**","/sass/**","/scss/**","/Fragments/**").permitAll();
                             authorizeConfig.requestMatchers("/registration/**").permitAll();
                             authorizeConfig.requestMatchers("/","/login","/error","api/**").permitAll();
                             authorizeConfig.requestMatchers("/candidate/**").hasAuthority(Role.CANDIDATE.name());
