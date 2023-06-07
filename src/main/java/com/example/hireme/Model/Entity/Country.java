@@ -19,19 +19,21 @@ public class Country {
     private Long id;
 
     private String name;
-    private Boolean Active;
+    private String region;
+    private String currency;
+    private int active;
 
     @OneToMany(mappedBy="country")
     private List<City> cities;
 
-    public Country(String name, Boolean active, List<City> cities) {
+    public Country(String name, int active, List<City> cities) {
         this.name = name;
-        Active = active;
+        this.active = active;
         this.cities = cities;
     }
 
-    public Country(String name, Boolean active) {
+    public Country(String name, int active) {
         this.name = name;
-        Active = active;
+        this.active = active;
     }
 }

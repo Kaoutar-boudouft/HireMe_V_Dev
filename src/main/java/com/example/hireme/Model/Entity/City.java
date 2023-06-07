@@ -4,6 +4,7 @@ import com.example.hireme.Model.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -19,7 +20,7 @@ public class City {
     private Long id;
 
     private String name;
-    private Boolean Active;
+    private int Active;
 
     @OneToMany(mappedBy="city")
     private List<Profile> profiles;
@@ -34,7 +35,7 @@ public class City {
     @JoinColumn(name="country_id", nullable=false)
     private Country country;
 
-    public City(String name, Boolean active) {
+    public City(String name, int active) {
         this.name = name;
         Active = active;
     }
