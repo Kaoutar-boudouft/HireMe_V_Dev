@@ -17,21 +17,21 @@ import java.time.LocalDate;
 public abstract class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    protected Long id;
 
-    private String first_name;
-    private String last_name;
-    private LocalDate birth_date;
-    private String id_number;
-    private Integer mobile_number;
+    protected String first_name;
+    protected String last_name;
+    protected LocalDate birth_date;
+    protected String id_number;
+    protected Integer mobile_number;
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    protected User user;
 
     @ManyToOne
     @JoinColumn(name="city_id", nullable=true)
-    private City city;
+    protected City city;
 
     public Profile(String first_name, String last_name, LocalDate birth_date, String id_number, Integer mobile_number, User user, City city) {
         this.first_name = first_name;

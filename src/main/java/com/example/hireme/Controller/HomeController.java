@@ -2,6 +2,7 @@ package com.example.hireme.Controller;
 
 import com.example.hireme.Model.Entity.Country;
 import com.example.hireme.Model.Entity.OfferCategory;
+import com.example.hireme.Model.Entity.User;
 import com.example.hireme.Service.CountryService;
 import com.example.hireme.Service.OfferCategoryService;
 import lombok.AllArgsConstructor;
@@ -21,9 +22,13 @@ public class HomeController {
     public String getHomePage(Authentication authentication, Model model){
         List<Country> countries = countryService.getActiveCountries();
         List<OfferCategory> categories = offerCategoryService.getAllCategories();
-        model.addAttribute("user",authentication);
+        User user;
+        if (authentication!=null)user = (User) authentication.getPrincipal();
+        else user = null;
+        model.addAttribute("user",user);
         model.addAttribute("countries",countries);
         model.addAttribute("categories",categories);
+        model.addAttribute("type","home");
         return "home";
     }
 
