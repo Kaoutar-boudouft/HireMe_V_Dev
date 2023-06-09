@@ -1,15 +1,9 @@
-package com.example.hireme.Controller;
+package com.example.hireme.Controller.Candidate;
 
-import com.example.hireme.Model.Entity.CandidateProfile;
-import com.example.hireme.Model.Entity.City;
-import com.example.hireme.Model.Entity.Country;
-import com.example.hireme.Model.Entity.User;
+import com.example.hireme.Model.Entity.*;
 import com.example.hireme.MultiLanguages.LanguageConfig;
 import com.example.hireme.Requests.UpdateCandidateProfileRequest;
-import com.example.hireme.Service.CandidateProfileService;
-import com.example.hireme.Service.CityService;
-import com.example.hireme.Service.CountryService;
-import com.example.hireme.Service.FileUploadService;
+import com.example.hireme.Service.*;
 import jakarta.mail.Multipart;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -37,6 +31,7 @@ public class CandidateController {
     private final CityService cityService;
     private final LanguageConfig languageConfig;
     private final FileUploadService fileUploadService;
+    private final MediaService mediaService;
 
 
     @GetMapping("/profile")
@@ -44,39 +39,47 @@ public class CandidateController {
         User user = (User) authentication.getPrincipal();
         UpdateCandidateProfileRequest updateCandidateProfileRequest = candidateProfileService.prepareUpdateCandidateRequest(
                 candidateProfileService.getCandidateProfile(user.getId()));
-        List<Country> countries = countryService.getActiveCountries();
-        List<City> cities = cityService.getActiveCitiesByCountry(updateCandidateProfileRequest.getCountry());
+        model = getCommunAttr(model,updateCandidateProfileRequest,user);
         model.addAttribute("updateCandidateProfileRequest",updateCandidateProfileRequest);
-        model.addAttribute("countries",countries);
-        model.addAttribute("cities",cities);
-        model.addAttribute("type", "profile");
-        model.addAttribute("user",user);
         return "Candidate/profile";
     }
 
     @PostMapping("/profile/update")
-    public String updateCandidate(@RequestParam("file") MultipartFile file, Authentication authentication , @Valid UpdateCandidateProfileRequest updateCandidateProfileRequest,
+    public String updateCandidate(Authentication authentication , @Valid UpdateCandidateProfileRequest updateCandidateProfileRequest,
                                   BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model) throws IOException {
+        User user = (User) authentication.getPrincipal();
         if (bindingResult.hasErrors()){
-            List<Country> countries = countryService.getActiveCountries();
-            List<City> cities = cityService.getActiveCitiesByCountry(updateCandidateProfileRequest.getCountry());
-            model.addAttribute("countries", countries);
-            model.addAttribute("cities", cities);
+            model = getCommunAttr(model,updateCandidateProfileRequest,user);
             redirectAttributes.addFlashAttribute("error", bindingResult);
             redirectAttributes.addFlashAttribute("updateCandidateProfileRequest", updateCandidateProfileRequest);
             return "Candidate/profile";
         }
-        User user = (User) authentication.getPrincipal();
         candidateProfileService.updateCandidateProfile(updateCandidateProfileRequest,user.getId());
         try {
-            fileUploadService.uploadFile(file,user.getId());
+            Media media = new Media("CandidateProfile",candidateProfileService.getCandidateProfile(user.getId()).getId(),"cv");
+            fileUploadService.uploadFile(updateCandidateProfileRequest.getFile(),media);
         }
         catch (IOException e){
-            redirectAttributes.addFlashAttribute("file_error", e.getMessage());
+            model = getCommunAttr(model,updateCandidateProfileRequest,user);
+            model.addAttribute("file_error", e.getMessage());
             redirectAttributes.addFlashAttribute("updateCandidateProfileRequest", updateCandidateProfileRequest);
             return "Candidate/profile";
         }
         redirectAttributes.addFlashAttribute("successMessage",languageConfig.messageSource().getMessage("update_profile",new Object[] {}, locale));
         return "redirect:/candidate/profile";
+    }
+
+
+    public Model getCommunAttr(Model model,UpdateCandidateProfileRequest updateCandidateProfileRequest,User user){
+        List<Country> countries = countryService.getActiveCountries();
+        List<City> cities = cityService.getActiveCitiesByCountry(updateCandidateProfileRequest.getCountry());
+        Media media = mediaService.getMedia("CandidateProfile",
+                candidateProfileService.getCandidateProfile(user.getId()).getId(),"cv");
+        model.addAttribute("user",user);
+        model.addAttribute("countries",countries);
+        model.addAttribute("cities",cities);
+        model.addAttribute("media",media);
+        model.addAttribute("type", "profile");
+        return model;
     }
 }
