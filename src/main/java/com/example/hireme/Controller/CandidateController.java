@@ -9,18 +9,20 @@ import com.example.hireme.Requests.UpdateCandidateProfileRequest;
 import com.example.hireme.Service.CandidateProfileService;
 import com.example.hireme.Service.CityService;
 import com.example.hireme.Service.CountryService;
+import com.example.hireme.Service.FileUploadService;
+import jakarta.mail.Multipart;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,6 +36,7 @@ public class CandidateController {
 
     private final CityService cityService;
     private final LanguageConfig languageConfig;
+    private final FileUploadService fileUploadService;
 
 
     @GetMapping("/profile")
@@ -52,8 +55,8 @@ public class CandidateController {
     }
 
     @PostMapping("/profile/update")
-    public String updateCandidate(Authentication authentication ,@Valid UpdateCandidateProfileRequest updateCandidateProfileRequest,
-                                  BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale,Model model){
+    public String updateCandidate(@RequestParam("file") MultipartFile file, Authentication authentication , @Valid UpdateCandidateProfileRequest updateCandidateProfileRequest,
+                                  BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model) throws IOException {
         if (bindingResult.hasErrors()){
             List<Country> countries = countryService.getActiveCountries();
             List<City> cities = cityService.getActiveCitiesByCountry(updateCandidateProfileRequest.getCountry());
@@ -65,6 +68,14 @@ public class CandidateController {
         }
         User user = (User) authentication.getPrincipal();
         candidateProfileService.updateCandidateProfile(updateCandidateProfileRequest,user.getId());
+        try {
+            fileUploadService.uploadFile(file);
+        }
+        catch (IOException e){
+            redirectAttributes.addFlashAttribute("file_error", e.getMessage());
+            redirectAttributes.addFlashAttribute("updateCandidateProfileRequest", updateCandidateProfileRequest);
+            return "Candidate/profile";
+        }
         redirectAttributes.addFlashAttribute("successMessage",languageConfig.messageSource().getMessage("update_profile",new Object[] {}, locale));
         return "redirect:/candidate/profile";
     }

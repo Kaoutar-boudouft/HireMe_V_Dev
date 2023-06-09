@@ -37,7 +37,8 @@ public class CandidateProfileService {
         return new UpdateCandidateProfileRequest(
                 candidateProfile.getFirst_name(),candidateProfile.getLast_name(),candidateProfile.getBirth_date(),
                 candidateProfile.getMobile_number(),candidateProfile.getId_number(),candidateProfile.getCity().getId(),
-                candidateProfile.getCity().getCountry().getId(),candidateProfile.getMotivation_letter());
+                candidateProfile.getCity().getCountry().getId(),candidateProfile.getMotivation_letter()
+                ,null);
     }
 
     public CandidateProfile updateCandidateProfile(UpdateCandidateProfileRequest updateCandidateProfileRequest,Long user_id){

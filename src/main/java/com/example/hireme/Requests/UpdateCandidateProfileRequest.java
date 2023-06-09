@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.NumberFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -43,5 +44,8 @@ public class UpdateCandidateProfileRequest {
 
     @NotEmpty()
     String motivation_letter;
+
+    @NotNull
+    MultipartFile file;
 
 }
