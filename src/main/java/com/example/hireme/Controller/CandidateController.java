@@ -69,7 +69,7 @@ public class CandidateController {
         User user = (User) authentication.getPrincipal();
         candidateProfileService.updateCandidateProfile(updateCandidateProfileRequest,user.getId());
         try {
-            fileUploadService.uploadFile(file);
+            fileUploadService.uploadFile(file,user.getId());
         }
         catch (IOException e){
             redirectAttributes.addFlashAttribute("file_error", e.getMessage());
