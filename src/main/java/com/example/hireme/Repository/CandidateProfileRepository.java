@@ -13,5 +13,6 @@ public interface CandidateProfileRepository extends JpaRepository<CandidateProfi
     /*@Query(value = "select * from candidates_profiles cp where cp.user_id=?1", nativeQuery = true)
     public List<User> findByUserId(Long id);*/
 
-    public CandidateProfile findByUserId(Long user_id);
+    CandidateProfile findByUserId(Long user_id);
+
 }

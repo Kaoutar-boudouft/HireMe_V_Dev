@@ -34,6 +34,7 @@ public class SecurityConfig {
                             authorizeConfig.requestMatchers("/candidate/**").hasAuthority(Role.CANDIDATE.name());
                             authorizeConfig.requestMatchers("/employer/**").hasAuthority(Role.EMPLOYER.name());
                             authorizeConfig.requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name());
+                            authorizeConfig.requestMatchers("/account/**").authenticated();
         }).logout(logout -> logout.logoutUrl("/logout").clearAuthentication(true)
                         .deleteCookies("JSESSIONID").logoutSuccessUrl("/login")).build();
     }

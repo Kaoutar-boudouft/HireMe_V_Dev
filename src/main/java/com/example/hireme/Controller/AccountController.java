@@ -1,4 +1,4 @@
-package com.example.hireme.Controller.Candidate;
+package com.example.hireme.Controller;
 
 import com.example.hireme.Events.RegistrationSuccessEvent;
 import com.example.hireme.Exceptions.UserAlreadyExistException;
@@ -30,7 +30,7 @@ import java.util.Locale;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("/candidate/account")
+@RequestMapping("/account")
 public class AccountController {
 
     private final UserService userService;
@@ -47,7 +47,7 @@ public class AccountController {
         model = getCommunAttr(model,user);
         model.addAttribute("emailUpdateRequest",emailUpdateRequest);
         model.addAttribute("passwordUpdateRequest",passwordUpdateRequest);
-        return "Candidate/account";
+        return "account";
     }
 
     @PostMapping("/update/email")
@@ -61,7 +61,7 @@ public class AccountController {
             model.addAttribute("passwordUpdateRequest",passwordUpdateRequest);
             redirectAttributes.addFlashAttribute("error", bindingResult);
             redirectAttributes.addFlashAttribute("emailUpdateRequest", emailUpdateRequest);
-            return "Candidate/account";
+            return "account";
         }
         try {
             User u = userService.updateUserEmail(user,emailUpdateRequest);
@@ -71,11 +71,11 @@ public class AccountController {
                return "redirect:/logout";
            }
             redirectAttributes.addFlashAttribute("error","update error");
-            return "redirect:/candidate/account";
+            return "redirect:/account";
         }
         catch (UserAlreadyExistException e){
             redirectAttributes.addFlashAttribute("warning",languageConfig.messageSource().getMessage("email_exists",new Object[] {}, locale));
-            return "redirect:/candidate/account";
+            return "redirect:/account";
         }
     }
 
@@ -90,12 +90,12 @@ public class AccountController {
             model.addAttribute("emailUpdateRequest",emailUpdateRequest);
             redirectAttributes.addFlashAttribute("error", bindingResult);
             redirectAttributes.addFlashAttribute("passwordUpdateRequest", passwordUpdateRequest);
-            return "Candidate/account";
+            return "account";
         }
 
         user = userService.updateUserPassword(user,passwordUpdateRequest);
         redirectAttributes.addFlashAttribute("success",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
-        return "redirect:/candidate/account";
+        return "redirect:/account";
     }
 
     public Model getCommunAttr(Model model, User user){
