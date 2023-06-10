@@ -9,5 +9,4 @@ import java.util.List;
 
 @Repository
 public interface JobOfferRepository extends JpaRepository<JobOffer,Long> {
-    List<JobOffer> findByCandidates(List<CandidateProfile> candidates);
 }

@@ -64,8 +64,8 @@ public class UserService  implements UserDetailsService{
         User newUser = new User();
         newUser.setEmail(employerRegisterRequest.getEmail());
         newUser.setCreated_at(LocalDateTime.now());
-        newUser.setRole(Role.CANDIDATE);
-        newUser.setActive(true);
+        newUser.setRole(Role.EMPLOYER);
+        newUser.setActive(false);
         newUser.setPassword(passwordEncoder.encode(employerRegisterRequest.getPassword()));
         userRepository.save(newUser);
         Company newCompany = companyService.createNewCompany(employerRegisterRequest);
