@@ -2,14 +2,15 @@ package com.example.hireme.Service;
 
 import com.example.hireme.Exceptions.UserAlreadyExistException;
 import com.example.hireme.Model.Entity.Company;
-import com.example.hireme.Model.Entity.EmployerProfile;
 import com.example.hireme.Model.Entity.User;
 import com.example.hireme.Model.Entity.VerificationToken;
 import com.example.hireme.Model.Role;
 import com.example.hireme.Repository.UserRepository;
 import com.example.hireme.Repository.VerificationTokenRepository;
-import com.example.hireme.Requests.CandidateRegisterRequest;
+import com.example.hireme.Requests.Candidate.CandidateRegisterRequest;
+import com.example.hireme.Requests.EmailUpdateRequest;
 import com.example.hireme.Requests.EmployerRegisterRequest;
+import com.example.hireme.Requests.PasswordUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,6 +78,26 @@ public class UserService  implements UserDetailsService{
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("User with email "+email+" not found!"));
     }
+
+    public User updateUserEmail(User user, EmailUpdateRequest emailUpdateRequest){
+        Optional<User> u = findByEmail(emailUpdateRequest.getEmail());
+        if (u.isPresent()){
+            throw new UserAlreadyExistException("User with email "+user.getEmail()+" already exist !");
+        }
+        user.setEmail(emailUpdateRequest.getEmail());
+        user.setEmail_verified_at(null);
+        return userRepository.save(user);
+    }
+
+    public User updateUserPassword(User user, PasswordUpdateRequest passwordUpdateRequest){
+        Optional<User> u = findByEmail(user.getEmail());
+        if (u.isPresent()){
+            user.setPassword(passwordEncoder.encode(passwordUpdateRequest.getPassword()));
+            return userRepository.save(user);
+        }
+        return null;
+    }
+
 
     public void saveVerificationToken(User candidate, String verificationToken) {
         VerificationToken token = new VerificationToken(verificationToken,candidate);

@@ -5,7 +5,7 @@ import com.example.hireme.Exceptions.UserAlreadyExistException;
 import com.example.hireme.Model.Entity.Country;
 import com.example.hireme.Model.Entity.User;
 import com.example.hireme.MultiLanguages.LanguageConfig;
-import com.example.hireme.Requests.CandidateRegisterRequest;
+import com.example.hireme.Requests.Candidate.CandidateRegisterRequest;
 import com.example.hireme.Requests.EmployerRegisterRequest;
 import com.example.hireme.Service.AppService;
 import com.example.hireme.Service.CountryService;
@@ -14,7 +14,6 @@ import com.example.hireme.Service.VerificationTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.hibernate.Session;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,12 +21,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 @Controller
 @AllArgsConstructor

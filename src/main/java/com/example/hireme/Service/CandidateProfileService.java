@@ -5,8 +5,8 @@ import com.example.hireme.Model.Entity.CandidateProfile;
 import com.example.hireme.Model.Entity.User;
 import com.example.hireme.Repository.CandidateProfileRepository;
 import com.example.hireme.Repository.CityRepository;
-import com.example.hireme.Requests.CandidateRegisterRequest;
-import com.example.hireme.Requests.UpdateCandidateProfileRequest;
+import com.example.hireme.Requests.Candidate.CandidateRegisterRequest;
+import com.example.hireme.Requests.Candidate.UpdateCandidateProfileRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

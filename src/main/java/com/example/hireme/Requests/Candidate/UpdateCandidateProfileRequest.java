@@ -1,4 +1,4 @@
-package com.example.hireme.Requests;
+package com.example.hireme.Requests.Candidate;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

@@ -17,16 +17,18 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
 public class FileUploadService {
     private final MediaRepository mediaRepository;
     private final LanguageConfig languageConfig;
-    public void uploadFile(MultipartFile file, Media media) throws IOException {
-        if (file.isEmpty()){
-            throw new IOException(languageConfig.messageSource().getMessage("cv_required",new Object[] {}, null));
+    public void uploadFile(MultipartFile file, Media media, Locale locale) throws IOException {
+        if (file.isEmpty() && media.getPath()==null){
+            throw new IOException(languageConfig.messageSource().getMessage("cv_required",new Object[] {}, locale));
         }
+        if (!file.isEmpty()){
             String filename = file.getOriginalFilename();
             String[] split_name = filename.split("\\.");
             String extension = split_name[split_name.length-1];
@@ -41,6 +43,7 @@ public class FileUploadService {
                 mediaRepository.save(media);
             }
             Files.write(Paths.get(path), bytes);
+        }
     }
 
     public boolean checkFileExistance(String path){

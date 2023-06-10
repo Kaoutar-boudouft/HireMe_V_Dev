@@ -25,6 +25,7 @@ public class RegisterSuccessEventListener implements ApplicationListener<Registr
         User user = event.getUser();
         String verificationToken = UUID.randomUUID().toString();
         userService.saveVerificationToken(user,verificationToken);
+        System.out.println("kaoutar enter to listener");
         String url = event.getApplicationUrl()+"/registration/verify-token?token="+verificationToken;
         emailService.send(user.getEmail(),"<h1 align='left' >HIREME</h1><br><h3 align='center'>"+languageConfig.messageSource().getMessage("account_verification_needed",new Object[] {}, event.getLocale())+"</h1>" +
                 "<br><h4 align='center'><a href='"+url+"'>"+languageConfig.messageSource().getMessage("Account_Verification",new Object[] {}, event.getLocale())+"</a></h4>",
