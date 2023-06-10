@@ -23,7 +23,10 @@ public class HomeController {
         List<Country> countries = countryService.getActiveCountries();
         List<OfferCategory> categories = offerCategoryService.getAllCategories();
         User user;
-        if (authentication!=null)user = (User) authentication.getPrincipal();
+        if (authentication!=null){
+            user = (User) authentication.getPrincipal();
+            model.addAttribute("role",user.getRole().toString());
+        }
         else user = null;
         model.addAttribute("user",user);
         model.addAttribute("countries",countries);
