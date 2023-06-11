@@ -1,4 +1,4 @@
-package com.example.hireme.Requests;
+package com.example.hireme.Requests.Employer;
 
 import com.example.hireme.Model.Entity.City;
 import jakarta.validation.constraints.Email;

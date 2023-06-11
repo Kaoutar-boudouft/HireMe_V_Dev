@@ -9,7 +9,7 @@ import com.example.hireme.Repository.UserRepository;
 import com.example.hireme.Repository.VerificationTokenRepository;
 import com.example.hireme.Requests.Candidate.CandidateRegisterRequest;
 import com.example.hireme.Requests.EmailUpdateRequest;
-import com.example.hireme.Requests.EmployerRegisterRequest;
+import com.example.hireme.Requests.Employer.EmployerRegisterRequest;
 import com.example.hireme.Requests.PasswordUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

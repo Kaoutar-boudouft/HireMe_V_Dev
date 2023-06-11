@@ -6,7 +6,7 @@ import com.example.hireme.Model.Entity.Country;
 import com.example.hireme.Model.Entity.User;
 import com.example.hireme.MultiLanguages.LanguageConfig;
 import com.example.hireme.Requests.Candidate.CandidateRegisterRequest;
-import com.example.hireme.Requests.EmployerRegisterRequest;
+import com.example.hireme.Requests.Employer.EmployerRegisterRequest;
 import com.example.hireme.Service.AppService;
 import com.example.hireme.Service.CountryService;
 import com.example.hireme.Service.UserService;

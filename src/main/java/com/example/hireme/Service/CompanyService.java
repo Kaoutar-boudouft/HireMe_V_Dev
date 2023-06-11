@@ -1,19 +1,13 @@
 package com.example.hireme.Service;
 
-import com.example.hireme.Exceptions.CompanyAlreadyExistException;
-import com.example.hireme.Exceptions.ProfileAlreadyExistException;
-import com.example.hireme.Model.Entity.City;
 import com.example.hireme.Model.Entity.Company;
-import com.example.hireme.Model.Entity.EmployerProfile;
-import com.example.hireme.Model.Entity.User;
 import com.example.hireme.Repository.CityRepository;
 import com.example.hireme.Repository.CompanyRepository;
-import com.example.hireme.Requests.EmployerRegisterRequest;
+import com.example.hireme.Requests.Employer.EmployerRegisterRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
