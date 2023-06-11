@@ -11,4 +11,5 @@ import java.util.List;
 public interface CityRepository extends JpaRepository<City,Long> {
     List<City> findByActiveAndCountryId(int active,Long country_id);
 
+
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +25,11 @@ import java.util.Locale;
 public class FileUploadService {
     private final MediaRepository mediaRepository;
     private final LanguageConfig languageConfig;
+    @Value("${external.resources.path}")
+    private String path;
+
+    @Value("${external.resources.dir}")
+    private String folder;
     public void uploadFile(MultipartFile file, Media media, Locale locale) throws IOException {
         if (file.isEmpty() && media.getPath()==null){
             throw new IOException(languageConfig.messageSource().getMessage("cv_required",new Object[] {}, locale));
@@ -33,13 +39,13 @@ public class FileUploadService {
             String[] split_name = filename.split("\\.");
             String extension = split_name[split_name.length-1];
             byte[] bytes = file.getBytes();
-            String path = "C:\\Users\\hp\\OneDrive\\Desktop\\Hire_Me\\src\\main\\resources\\static\\assets\\media\\"+media.getType()+"\\"+media.getType()+media.getEntityId()+'.'+extension;
+            String path = this.path+File.separator+media.getType()+File.separator+media.getType()+media.getEntityId()+'.'+extension;
             boolean fileExist = checkFileExistance(path);
             if (fileExist){
                 deleteFile(path);
             }
             else {
-                media.setPath("\\static\\assets\\media\\"+media.getType()+"\\"+media.getType()+media.getEntityId()+'.'+extension);
+                media.setPath(File.separator+this.folder+File.separator+media.getType()+File.separator+media.getType()+media.getEntityId()+'.'+extension);
                 mediaRepository.save(media);
             }
             Files.write(Paths.get(path), bytes);

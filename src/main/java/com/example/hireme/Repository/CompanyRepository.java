@@ -10,5 +10,8 @@ import java.util.List;
 
 @Repository
 public interface CompanyRepository extends JpaRepository<Company,Long> {
-    @Query(value = "select * from users u where u.user_id=?1", nativeQuery = true)
-    public List<User> findByUserId(Long id);}
+
+    Company findByEmployerProfile_Id(Long employer_profile_id);
+
+
+}
