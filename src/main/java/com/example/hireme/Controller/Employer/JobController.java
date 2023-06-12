@@ -84,6 +84,19 @@ public class JobController {
         return "redirect:/employer/jobs/new";
     }
 
+    @GetMapping("/{job_id}/disable")
+    public String changeJobState(@PathVariable("job_id") Long job_id,Model model){
+        JobOffer jobOffer = jobOfferService.getJobById(job_id);
+        if (jobOffer!=null){
+            jobOfferService.changeJobState(jobOffer);
+            model.addAttribute("success","job status changed successfully");
+        }
+        else {
+            model.addAttribute("error","job with this id doesn't exist");
+        }
+        return "redirect:/employer/jobs";
+    }
+
 
 
     public Model getCommunAttr(Model model,CreateJobRequest createJobRequest,User user){

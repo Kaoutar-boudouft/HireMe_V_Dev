@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -42,6 +43,25 @@ public class JobOfferService {
     }
     public List<JobOffer> getJobsByCompanyWithPagination(Long company_id,Long start,Long end){
         return jobOfferRepository.findByCompanyIdWithPagination(company_id,start,end);
+    }
+
+    public Boolean checkJobExistance(Long job_id){
+        Optional<JobOffer> jobOffer = jobOfferRepository.findById(job_id);
+        if (jobOffer.isPresent()) return true;
+        else return false;
+    }
+
+    public JobOffer getJobById(Long job_id){
+        Boolean jobOfferCheck = checkJobExistance(job_id);
+        if (jobOfferCheck){
+            return jobOfferRepository.getReferenceById(job_id);
+        }
+        else return null;
+    }
+
+    public void changeJobState(JobOffer jobOffer){
+            jobOffer.setActive(!jobOffer.getActive());
+            jobOfferRepository.save(jobOffer);
     }
 
 }
