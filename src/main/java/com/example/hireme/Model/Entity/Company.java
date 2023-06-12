@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name="companies")
@@ -36,6 +37,9 @@ public class Company {
     @OneToOne(mappedBy = "company" ,cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private EmployerProfile employerProfile;
+
+    @OneToMany(mappedBy="company")
+    private List<JobOffer> jobs_offers;
 
     @ManyToOne
     @JoinColumn(name="city_id", nullable=true)

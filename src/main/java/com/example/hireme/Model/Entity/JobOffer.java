@@ -39,6 +39,10 @@ public class JobOffer {
     private OfferCategory category;
 
     @ManyToOne
+    @JoinColumn(name="company_id", nullable=false)
+    private Company company;
+
+    @ManyToOne
     @JoinColumn(name="city_id", nullable=false)
     private City city;
 
