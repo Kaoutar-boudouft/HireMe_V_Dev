@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -34,6 +35,13 @@ public class JobOfferService {
         jobOffer.setType(JobType.valueOf(createJobRequest.getType()));
         jobOffer.setPublished_at(LocalDateTime.now());
         return jobOfferRepository.save(jobOffer);
+    }
+
+    public List<JobOffer> getJobsByCompany(Long company_id){
+        return jobOfferRepository.findByCompanyId(company_id);
+    }
+    public List<JobOffer> getJobsByCompanyWithPagination(Long company_id,Long start,Long end){
+        return jobOfferRepository.findByCompanyIdWithPagination(company_id,start,end);
     }
 
 }
