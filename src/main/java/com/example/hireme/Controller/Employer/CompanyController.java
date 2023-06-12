@@ -41,15 +41,7 @@ public class CompanyController {
         User user = (User) authentication.getPrincipal();
         UpdateEmployerCompanyRequest updateEmployerCompanyRequest = companyService.prepareUpdateCompanyRequest(
                 employerProfileService.getEmployerProfile(user.getId()));
-        Media media = mediaService.getMedia("Company",
-                employerProfileService.getEmployerProfile(user.getId()).getCompany().getId(),"company_logo");
-        model.addAttribute("media",media);
-        List<Country> countries = countryService.getActiveCountries();
-        List<City> cities = cityService.getActiveCitiesByCountry(updateEmployerCompanyRequest.getCompany_country());
-        model.addAttribute("user",user);
-        model.addAttribute("type", "profile");
-        model.addAttribute("countries", countries);
-        model.addAttribute("cities", cities);
+        model = getCommunAttr(model,updateEmployerCompanyRequest,user);
         model.addAttribute("updateEmployerCompanyRequest", updateEmployerCompanyRequest);
         return "Employer/company";
     }
@@ -58,15 +50,7 @@ public class CompanyController {
     public String updateCompany(Authentication authentication , @Valid UpdateEmployerCompanyRequest updateEmployerCompanyRequest,
                                  BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model) {
         User user = (User) authentication.getPrincipal();
-        Media media1 = mediaService.getMedia("Company",
-                employerProfileService.getEmployerProfile(user.getId()).getCompany().getId(),"company_logo");
-        model.addAttribute("media",media1);
-        List<Country> countries = countryService.getActiveCountries();
-        List<City> cities = cityService.getActiveCitiesByCountry(updateEmployerCompanyRequest.getCompany_country());
-        model.addAttribute("user",user);
-        model.addAttribute("type", "profile");
-        model.addAttribute("countries", countries);
-        model.addAttribute("cities", cities);
+        model = getCommunAttr(model,updateEmployerCompanyRequest,user);
         if (bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("error", bindingResult);
             redirectAttributes.addFlashAttribute("updateEmployerCompanyRequest", updateEmployerCompanyRequest);
@@ -91,5 +75,18 @@ public class CompanyController {
         }
         redirectAttributes.addFlashAttribute("successMessage",languageConfig.messageSource().getMessage("update_profile",new Object[] {}, locale));
         return "redirect:/employer/company";
+    }
+
+    public Model getCommunAttr(Model model,UpdateEmployerCompanyRequest updateEmployerCompanyRequest,User user){
+        List<Country> countries = countryService.getActiveCountries();
+        List<City> cities = cityService.getActiveCitiesByCountry(updateEmployerCompanyRequest.getCompany_country());
+        Media media = mediaService.getMedia("Company",
+                employerProfileService.getEmployerProfile(user.getId()).getCompany().getId(),"company_logo");
+        model.addAttribute("user",user);
+        model.addAttribute("countries",countries);
+        model.addAttribute("cities",cities);
+        model.addAttribute("media",media);
+        model.addAttribute("type", "profile");
+        return model;
     }
 }
