@@ -4,9 +4,7 @@ import com.example.hireme.Model.Currency;
 import com.example.hireme.Model.Entity.*;
 import com.example.hireme.Model.JobType;
 import com.example.hireme.MultiLanguages.LanguageConfig;
-import com.example.hireme.Requests.Employer.CreateJobRequest;
-import com.example.hireme.Requests.Employer.UpdateEmployerCompanyRequest;
-import com.example.hireme.Requests.Employer.UpdateEmployerProfileRequest;
+import com.example.hireme.Requests.Employer.CreateUpdateJobRequest;
 import com.example.hireme.Service.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -17,9 +15,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -48,7 +46,7 @@ public class JobController {
         List<JobOffer> paginatedJobsList = jobOfferService.getJobsByCompanyWithPagination(employerProfileService.getEmployerProfile(user.getId()).getCompany().getId(),start,end);
 
         Media media = mediaService.getMedia("Company",employerProfileService.getEmployerProfile(user.getId()).getCompany().getId(),"company_logo");
-        int totalPages = (int) Math.ceil((double) jobOffers.size() / 5);;
+        int totalPages = (int) Math.ceil((double) jobOffers.size() / 5);
         model.addAttribute("user", user);
         model.addAttribute("type", "profile");
         model.addAttribute("jobOffers", paginatedJobsList);
@@ -61,52 +59,102 @@ public class JobController {
         return "Employer/jobs";
     }
 
+    @GetMapping("/{job_id}/edit")
+    public String getJobEditPage(@PathVariable("job_id") Long job_id,Model model,Authentication authentication){
+        User user = (User) authentication.getPrincipal();
+        boolean checkJobExistance = jobOfferService.checkJobExistance(job_id);
+        if (checkJobExistance){
+            boolean checkUserAuthorityOnJob = jobOfferService.checkEmployerJobAuthority(job_id,user.getId());
+            if (checkUserAuthorityOnJob){
+                CreateUpdateJobRequest createUpdateJobRequest = jobOfferService.prepareUpdateJobRequest(job_id);
+                model = getCommunAttr(model,createUpdateJobRequest,user);
+                return "Employer/update_job";
+            }
+            else {
+                return "redirect:/employer/jobs";
+            }
+        }
+        else {
+            return "redirect:/employer/jobs";
+        }
+    }
+
+    @PostMapping("/{job_id}/update")
+    public String updateJob(Authentication authentication,@PathVariable("job_id") Long job_id,@Valid CreateUpdateJobRequest createUpdateJobRequest,
+                            BindingResult bindingResult,RedirectAttributes redirectAttributes,Model model,
+                            Locale locale){
+        User user = (User) authentication.getPrincipal();
+        boolean checkJobExistance = jobOfferService.checkJobExistance(job_id);
+        if (checkJobExistance){
+            boolean checkUserAuthorityOnJob = jobOfferService.checkEmployerJobAuthority(job_id,user.getId());
+            if (checkUserAuthorityOnJob){
+                if (bindingResult.hasErrors()){
+                    redirectAttributes.addFlashAttribute("error", bindingResult);
+                    redirectAttributes.addFlashAttribute("createUpdateJobRequest", createUpdateJobRequest);
+                    return "Employer/update_job";
+                }
+                model = getCommunAttr(model,createUpdateJobRequest,user);
+                createUpdateJobRequest.setId(job_id);
+                jobOfferService.updateJobOffer(createUpdateJobRequest);
+                redirectAttributes.addFlashAttribute("successMessage",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
+                return "redirect:/employer/jobs";
+            }
+            else {
+                return "redirect:/employer/jobs";
+            }
+        }
+        else {
+            return "redirect:/employer/jobs";
+        }
+    }
+
     @GetMapping("/new")
     public String getCreateJobPage(Authentication authentication, Model model){
-        CreateJobRequest createJobRequest = new CreateJobRequest();
+        CreateUpdateJobRequest createUpdateJobRequest = new CreateUpdateJobRequest();
         User user = (User) authentication.getPrincipal();
-        model = getCommunAttr(model,createJobRequest,user);
+        model = getCommunAttr(model, createUpdateJobRequest,user);
         return "Employer/new_job";
     }
 
     @PostMapping("/store")
-    public String createJob(Authentication authentication , @Valid CreateJobRequest createJobRequest,
+    public String createJob(Authentication authentication , @Valid CreateUpdateJobRequest createUpdateJobRequest,
                                  BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model) {
         User user = (User) authentication.getPrincipal();
-        model = getCommunAttr(model,createJobRequest,user);
+        model = getCommunAttr(model, createUpdateJobRequest,user);
         if (bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("error", bindingResult);
-            redirectAttributes.addFlashAttribute("createJobRequest", createJobRequest);
+            redirectAttributes.addFlashAttribute("createJobRequest", createUpdateJobRequest);
             return "Employer/new_job";
         }
-        jobOfferService.create(createJobRequest,employerProfileService.getEmployerProfile(user.getId()).getCompany().getId());
+        jobOfferService.create(createUpdateJobRequest,employerProfileService.getEmployerProfile(user.getId()).getCompany().getId());
         redirectAttributes.addFlashAttribute("successMessage",languageConfig.messageSource().getMessage("create",new Object[] {}, locale));
         return "redirect:/employer/jobs/new";
     }
 
     @GetMapping("/{job_id}/disable")
-    public String changeJobState(@PathVariable("job_id") Long job_id,Model model){
+    public String changeJobState(@PathVariable("job_id") Long job_id,Model model,RedirectAttributes redirectAttributes,Locale locale){
         JobOffer jobOffer = jobOfferService.getJobById(job_id);
         if (jobOffer!=null){
             jobOfferService.changeJobState(jobOffer);
-            model.addAttribute("success","job status changed successfully");
+            redirectAttributes.addFlashAttribute("successMessage",languageConfig.messageSource().getMessage("job_status_changed",new Object[] {}, locale));
         }
         else {
-            model.addAttribute("error","job with this id doesn't exist");
+            redirectAttributes.addFlashAttribute("error","job with this id doesn't exist");
         }
         return "redirect:/employer/jobs";
     }
 
 
 
-    public Model getCommunAttr(Model model,CreateJobRequest createJobRequest,User user){
+    public Model getCommunAttr(Model model, CreateUpdateJobRequest createUpdateJobRequest, User user){
         List<Country> countries = countryService.getActiveCountries();
-        List<City> cities = cityService.getActiveCitiesByCountry(createJobRequest.getCountry_id());
+        List<City> cities = cityService.getActiveCitiesByCountry(createUpdateJobRequest.getCountry_id());
         List<OfferCategory> categories = offerCategoryService.getAllCategories();
         JobType[] types = JobType.values();
+        List<JobType> jobTypes = Arrays.asList(types);
         Currency[] currencies = Currency.values();
         model.addAttribute("user", user);
-        model.addAttribute("createJobRequest", createJobRequest);
+        model.addAttribute("createUpdateJobRequest", createUpdateJobRequest);
         model.addAttribute("type", "profile");
         model.addAttribute("countries", countries);
         model.addAttribute("cities", cities);
