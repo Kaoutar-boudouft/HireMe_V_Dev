@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -52,6 +53,10 @@ public class CompanyService {
         company.setPhone_number(updateEmployerCompanyRequest.getCompany_phone_number());
         company.setCity(cityRepository.getReferenceById(updateEmployerCompanyRequest.getCompany_city()));
         return companyRepository.save(company);
+    }
+
+    public List<Company> getTopCompaniesByJobOffersCount(){
+        return companyRepository.findTopByJobOffersCount();
     }
 
 

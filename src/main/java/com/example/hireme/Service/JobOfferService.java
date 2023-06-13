@@ -92,4 +92,8 @@ public class JobOfferService {
         return jobOfferRepository.save(jobOffer);
     }
 
+    public List<JobOffer> getRecentJobs(){
+        return jobOfferRepository.findRecentJobs();
+    }
+
 }

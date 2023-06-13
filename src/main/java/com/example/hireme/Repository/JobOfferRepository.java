@@ -15,4 +15,7 @@ public interface JobOfferRepository extends JpaRepository<JobOffer,Long> {
     @Query(value = "select * from jobs_offers jobs where jobs.company_id=?1 limit ?2,?3", nativeQuery = true)
     List<JobOffer> findByCompanyIdWithPagination(Long company_id,long start,long end);
 
+    @Query(value = "select * from jobs_offers jobs where active=b'1' order by published_at desc limit 4", nativeQuery = true)
+    List<JobOffer> findRecentJobs();
+
 }
