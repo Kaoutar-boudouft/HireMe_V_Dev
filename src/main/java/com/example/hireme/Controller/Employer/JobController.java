@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-@Controller
+@Controller("EmployerJobController")
 @AllArgsConstructor
 @RequestMapping("/employer/jobs")
 public class JobController {

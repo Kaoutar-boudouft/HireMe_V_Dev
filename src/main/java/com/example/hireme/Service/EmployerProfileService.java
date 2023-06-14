@@ -56,4 +56,8 @@ public class EmployerProfileService {
         return employerProfileRepository.save(employerProfile);
     }
 
+    public EmployerProfile getEmployerProfileByCompanyId(Long company_id){
+        return employerProfileRepository.findByCompanyId(company_id);
+    }
+
 }

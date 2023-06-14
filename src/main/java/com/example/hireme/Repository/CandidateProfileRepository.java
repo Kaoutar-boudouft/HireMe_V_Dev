@@ -10,9 +10,10 @@ import java.util.List;
 
 @Repository
 public interface CandidateProfileRepository extends JpaRepository<CandidateProfile,Long> {
-    /*@Query(value = "select * from candidates_profiles cp where cp.user_id=?1", nativeQuery = true)
-    public List<User> findByUserId(Long id);*/
 
     CandidateProfile findByUserId(Long user_id);
+
+
+
 
 }

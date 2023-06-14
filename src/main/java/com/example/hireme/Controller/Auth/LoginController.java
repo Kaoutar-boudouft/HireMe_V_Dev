@@ -36,7 +36,8 @@ public class LoginController {
     private final LanguageConfig languageConfig;
     private final CountryService countryService;
     @GetMapping("/login")
-    public String getLoginPage(){
+    public String getLoginPage(Model model){
+        model.addAttribute("type","login");
         return "Auth/login";
     }
 
@@ -44,6 +45,7 @@ public class LoginController {
     public String getCandidateRegisterPage(Model model){
         List<Country> countries = countryService.getActiveCountries();
         model.addAttribute("candidateRegisterRequest" ,new CandidateRegisterRequest());
+        model.addAttribute("type","register");
         return "Auth/candidate_register";
     }
 
@@ -52,6 +54,7 @@ public class LoginController {
                                                   BindingResult bindingResult,
                                                   final HttpServletRequest httpServletRequest,
                                                   RedirectAttributes redirectAttributes,Locale locale,Model model){
+        model.addAttribute("type","register");
         if (bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("error", bindingResult);
             redirectAttributes.addFlashAttribute("candidateRegisterRequest", candidateRegisterRequest);
@@ -73,6 +76,7 @@ public class LoginController {
     @GetMapping("/registration/employer")
     public String getEmployerRegisterPage(Model model){
         List<Country> countries = countryService.getActiveCountries();
+        model.addAttribute("type","register");
         model.addAttribute("countries",countries);
         model.addAttribute("employerRegisterRequest" ,new EmployerRegisterRequest());
         return "Auth/employer_register";
@@ -83,6 +87,7 @@ public class LoginController {
                                                  BindingResult bindingResult,
                                                  final HttpServletRequest httpServletRequest,
                                                  RedirectAttributes redirectAttributes,Locale locale,Model model){
+        model.addAttribute("type","register");
         if (bindingResult.hasErrors()){
             List<Country> countries = countryService.getActiveCountries();
             model.addAttribute("countries",countries);
