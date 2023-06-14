@@ -96,4 +96,27 @@ public class JobOfferService {
         return jobOfferRepository.findRecentJobs();
     }
 
+    public List<JobOffer> searchJobByTitleAndLocationAndCategoryWithPagination
+            (String title,String location,String category,long start,long end){
+        if (location.equals("")){
+            location = "%%";
+        }
+        if (category.equals("")){
+            category = "%%";
+        }
+        return jobOfferRepository.findByTitleAndCategoryAndLocationWithPagination(title,location,category,start,end);
+    }
+
+    public List<JobOffer> searchJobByTitleAndLocationAndCategory
+            (String title,String location,String category){
+        if (location.equals("")){
+            location = "%%";
+        }
+        if (category.equals("")){
+            category = "%%";
+        }
+        return jobOfferRepository.findByTitleAndCategoryAndLocation(title,location,category);
+    }
+
+
 }

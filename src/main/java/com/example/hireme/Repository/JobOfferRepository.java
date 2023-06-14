@@ -18,4 +18,11 @@ public interface JobOfferRepository extends JpaRepository<JobOffer,Long> {
     @Query(value = "select * from jobs_offers jobs where active=b'1' order by published_at desc limit 4", nativeQuery = true)
     List<JobOffer> findRecentJobs();
 
+    @Query(value = "select * from jobs_offers jobs where jobs.title like %?1% and category_id like ?3 and city_id in(select id from cities where country_id like ?2)", nativeQuery = true)
+    List<JobOffer> findByTitleAndCategoryAndLocation(String title,String location,String category);
+
+    @Query(value = "select * from jobs_offers jobs where jobs.title like %?1% and category_id like ?3 and city_id in(select id from cities where country_id like ?2) limit ?4,?5", nativeQuery = true)
+    List<JobOffer> findByTitleAndCategoryAndLocationWithPagination(String title,String location,String category,long start,long end);
+
+
 }
