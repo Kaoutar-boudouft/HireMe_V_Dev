@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -45,7 +44,6 @@ public class JobController {
         long start = (page_number-1)*5;
         long end = start+5;
         List<JobOffer> paginatedJobsList = jobOfferService.getJobsByCompanyWithPagination(employerProfileService.getEmployerProfile(user.getId()).getCompany().getId(),start,end);
-
         Media media = mediaService.getMedia("Company",employerProfileService.getEmployerProfile(user.getId()).getCompany().getId(),"company_logo");
         int totalPages = (int) Math.ceil((double) jobOffers.size() / 5);
         model.addAttribute("user", user);
@@ -56,7 +54,6 @@ public class JobController {
         model.addAttribute("cronoUnit",ChronoUnit.DAYS);
         model.addAttribute("page",page_number);
         model.addAttribute("totalPages",totalPages);
-//        long diffTime = jobOffers.get(0).getPublished_at().until( LocalDateTime.now(), ChronoUnit.DAYS );
         return "Employer/jobs";
     }
 
@@ -168,7 +165,7 @@ public class JobController {
     }
 
     @GetMapping("/{job_id}/candidatures/{candidate_id}")
-    public String getJobCandidaturesPage(Authentication authentication,@PathVariable("job_id") Long job_id,@PathVariable("candidate_id") long candidate_id,Model model){
+    public String getCandidateDetailsPage(Authentication authentication,@PathVariable("job_id") Long job_id,@PathVariable("candidate_id") long candidate_id,Model model){
         User user = (User) authentication.getPrincipal();
         CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(candidate_id);
         model.addAttribute("user",user);

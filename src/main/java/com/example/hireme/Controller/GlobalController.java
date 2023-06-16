@@ -1,21 +1,15 @@
 package com.example.hireme.Controller;
 
 import com.example.hireme.Model.Entity.*;
-import com.example.hireme.Model.Profile;
-import com.example.hireme.Repository.CandidateProfileRepository;
-import com.example.hireme.Repository.JobOfferRepository;
 import com.example.hireme.Service.*;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -50,10 +44,10 @@ public class GlobalController {
     }
 
 
-//    @GetMapping("/error")
-//    public String getErrorPage(){
-//        return "error";
-//    }
+    @GetMapping("/error")
+    public String getErrorPage(){
+        return "error";
+    }
 
 
 }

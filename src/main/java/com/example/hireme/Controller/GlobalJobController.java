@@ -10,7 +10,6 @@ import com.example.hireme.Repository.CandidateProfileRepository;
 import com.example.hireme.Repository.JobOfferRepository;
 import com.example.hireme.Service.*;
 import lombok.AllArgsConstructor;
-import org.hibernate.PropertyAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,10 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,9 +32,6 @@ public class GlobalJobController {
     private final MediaService mediaService;
     private final EmployerProfileService employerProfileService;
     private final CandidateProfileService candidateProfileService;
-    private final LanguageConfig languageConfig;
-    private JobOfferRepository jobOfferRepository;
-    private CandidateProfileRepository candidateProfileRepository;
 
     @GetMapping("/search")
     public String getSearchResult(Authentication authentication, @RequestParam(name="t") String title, @RequestParam(name="l") String location,

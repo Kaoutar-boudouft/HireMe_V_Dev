@@ -1,10 +1,8 @@
 package com.example.hireme.Controller.Candidate;
 
-import com.example.hireme.Model.Entity.CandidateProfile;
 import com.example.hireme.Model.Entity.JobOffer;
 import com.example.hireme.Model.Entity.Media;
 import com.example.hireme.Model.Entity.User;
-import com.example.hireme.Service.CandidateProfileService;
 import com.example.hireme.Service.JobOfferService;
 import com.example.hireme.Service.MediaService;
 import lombok.AllArgsConstructor;
@@ -24,7 +22,6 @@ import java.util.List;
 @RequestMapping("/candidate/applies")
 public class AppliesController {
 
-    private final CandidateProfileService candidateProfileService;
     private final JobOfferService jobOfferService;
     private final MediaService mediaService;
 
