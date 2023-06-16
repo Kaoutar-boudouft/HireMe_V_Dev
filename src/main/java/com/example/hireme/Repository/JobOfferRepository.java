@@ -24,5 +24,14 @@ public interface JobOfferRepository extends JpaRepository<JobOffer,Long> {
     @Query(value = "select * from jobs_offers jobs where jobs.title like %?1% and category_id like ?3 and city_id in(select id from cities where country_id like ?2) limit ?4,?5", nativeQuery = true)
     List<JobOffer> findByTitleAndCategoryAndLocationWithPagination(String title,String location,String category,long start,long end);
 
+    @Query(value = "select * from jobs_offers jobs where jobs.id in(select offer_id from candidatures where candidate_profile_id=?1)", nativeQuery = true)
+    List<JobOffer> findCandidateCandidatures(Long candidate_profile_id);
+
+    @Query(value = "select * from jobs_offers jobs where jobs.id in(select offer_id from candidatures where candidate_profile_id=?1) limit ?2,?3", nativeQuery = true)
+    List<JobOffer> findCandidateCandidaturesWithPagination(Long candidate_profile_id,long start,long end);
+
+
+
+
 
 }

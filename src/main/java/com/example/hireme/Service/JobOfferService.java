@@ -44,6 +44,13 @@ public class JobOfferService {
         return jobOfferRepository.findByCompanyIdWithPagination(company_id,start,end);
     }
 
+    public List<JobOffer> getCandidateCandidatures(Long candidate_profile_id){
+        return jobOfferRepository.findCandidateCandidatures(candidate_profile_id);
+    }
+    public List<JobOffer> getCandidateCandidaturesWithPagination(Long candidate_profile_id,Long start,Long end){
+        return jobOfferRepository.findCandidateCandidaturesWithPagination(candidate_profile_id,start,end);
+    }
+
     public Boolean checkEmployerJobAuthority(Long job_id,Long user_id){
         EmployerProfile employerProfile = employerProfileRepository.findByUserId(user_id);
         return employerProfile.getCompany().getJobs_offers().contains(jobOfferRepository.getReferenceById(job_id));
