@@ -1,20 +1,24 @@
 package com.example.hireme.Controller;
 
 import com.example.hireme.Model.Entity.*;
+import com.example.hireme.Model.Profile;
+import com.example.hireme.Repository.CandidateProfileRepository;
+import com.example.hireme.Repository.JobOfferRepository;
 import com.example.hireme.Service.*;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class GlobalController {
     private final CountryService countryService;
     private final OfferCategoryService offerCategoryService;
@@ -44,6 +48,7 @@ public class GlobalController {
         model.addAttribute("cronoUnit", ChronoUnit.DAYS);
         return "home";
     }
+
 
 //    @GetMapping("/error")
 //    public String getErrorPage(){

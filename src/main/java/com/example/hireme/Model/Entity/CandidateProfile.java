@@ -15,14 +15,9 @@ import java.util.Optional;
 @Table(name = "candidates_profiles")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Setter
 @Getter
 public class CandidateProfile extends Profile {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
     @Enumerated(value = EnumType.STRING)
     private StudyDegree study_degree;
@@ -33,9 +28,10 @@ public class CandidateProfile extends Profile {
     private String motivation_letter;
     private String experience;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
     @JoinTable(name = "candidatures", joinColumns = @JoinColumn(name = "candidate_profile_id"), inverseJoinColumns = @JoinColumn(name = "offer_id"))
-    List<JobOffer> job_offers;
+    private List<JobOffer> job_offers;
+
 
     public CandidateProfile(String first_name, String last_name, LocalDate birth_date, String id_number, Integer mobile_number, User user, City city, StudyDegree study_degree, JobType specialisation, String motivation_letter, String experience, List<JobOffer> job_offers) {
         super(first_name, last_name, birth_date, id_number, mobile_number, user, city);
@@ -66,4 +62,5 @@ public class CandidateProfile extends Profile {
     public CandidateProfile(String first_name, String last_name, LocalDate birth_date) {
         super(first_name, last_name, birth_date);
     }
+
 }

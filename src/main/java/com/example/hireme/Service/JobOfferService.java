@@ -44,26 +44,14 @@ public class JobOfferService {
         return jobOfferRepository.findByCompanyIdWithPagination(company_id,start,end);
     }
 
-    public Boolean checkJobExistance(Long job_id){
-        Optional<JobOffer> jobOffer = jobOfferRepository.findById(job_id);
-        if (jobOffer.isPresent()) return true;
-        else return false;
-    }
-
     public Boolean checkEmployerJobAuthority(Long job_id,Long user_id){
         EmployerProfile employerProfile = employerProfileRepository.findByUserId(user_id);
-        if (employerProfile.getCompany().getJobs_offers().contains(jobOfferRepository.getReferenceById(job_id))){
-            return true;
-        }
-        else return false;
+        return employerProfile.getCompany().getJobs_offers().contains(jobOfferRepository.getReferenceById(job_id));
     }
 
     public JobOffer getJobById(Long job_id){
-        Boolean jobOfferCheck = checkJobExistance(job_id);
-        if (jobOfferCheck){
-            return jobOfferRepository.getReferenceById(job_id);
-        }
-        else return null;
+        Optional<JobOffer> jobOfferCheck = jobOfferRepository.findById(job_id);
+        return jobOfferCheck.orElse(null);
     }
 
     public void changeJobState(JobOffer jobOffer){
@@ -117,6 +105,7 @@ public class JobOfferService {
         }
         return jobOfferRepository.findByTitleAndCategoryAndLocation(title,location,category);
     }
+
 
 
 }

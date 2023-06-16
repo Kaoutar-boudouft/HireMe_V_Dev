@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-@Controller("EmployerJobController")
+@Controller
 @AllArgsConstructor
 @RequestMapping("/employer/jobs")
 public class JobController {
@@ -62,8 +62,8 @@ public class JobController {
     @GetMapping("/{job_id}/edit")
     public String getJobEditPage(@PathVariable("job_id") Long job_id,Model model,Authentication authentication){
         User user = (User) authentication.getPrincipal();
-        boolean checkJobExistance = jobOfferService.checkJobExistance(job_id);
-        if (checkJobExistance){
+        JobOffer checkJobExistance = jobOfferService.getJobById(job_id);
+        if (checkJobExistance != null){
             boolean checkUserAuthorityOnJob = jobOfferService.checkEmployerJobAuthority(job_id,user.getId());
             if (checkUserAuthorityOnJob){
                 CreateUpdateJobRequest createUpdateJobRequest = jobOfferService.prepareUpdateJobRequest(job_id);
@@ -84,8 +84,8 @@ public class JobController {
                             BindingResult bindingResult,RedirectAttributes redirectAttributes,Model model,
                             Locale locale){
         User user = (User) authentication.getPrincipal();
-        boolean checkJobExistance = jobOfferService.checkJobExistance(job_id);
-        if (checkJobExistance){
+        JobOffer checkJobExistance = jobOfferService.getJobById(job_id);
+        if (checkJobExistance!=null){
             boolean checkUserAuthorityOnJob = jobOfferService.checkEmployerJobAuthority(job_id,user.getId());
             if (checkUserAuthorityOnJob){
                 if (bindingResult.hasErrors()){

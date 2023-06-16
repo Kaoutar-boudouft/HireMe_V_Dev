@@ -56,4 +56,68 @@ public abstract class Profile {
         this.last_name = last_name;
         this.birth_date = birth_date;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFirst_name() {
+        return first_name;
+    }
+
+    public void setFirst_name(String first_name) {
+        this.first_name = first_name;
+    }
+
+    public String getLast_name() {
+        return last_name;
+    }
+
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
+    }
+
+    public LocalDate getBirth_date() {
+        return birth_date;
+    }
+
+    public void setBirth_date(LocalDate birth_date) {
+        this.birth_date = birth_date;
+    }
+
+    public String getId_number() {
+        return id_number;
+    }
+
+    public void setId_number(String id_number) {
+        this.id_number = id_number;
+    }
+
+    public Integer getMobile_number() {
+        return mobile_number;
+    }
+
+    public void setMobile_number(Integer mobile_number) {
+        this.mobile_number = mobile_number;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
 }

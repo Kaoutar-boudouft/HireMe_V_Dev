@@ -5,8 +5,12 @@ import com.example.hireme.Model.Entity.EmployerProfile;
 import com.example.hireme.Model.Entity.JobOffer;
 import com.example.hireme.Model.Entity.User;
 import com.example.hireme.Model.Role;
+import com.example.hireme.MultiLanguages.LanguageConfig;
+import com.example.hireme.Repository.CandidateProfileRepository;
+import com.example.hireme.Repository.JobOfferRepository;
 import com.example.hireme.Service.*;
 import lombok.AllArgsConstructor;
+import org.hibernate.PropertyAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,20 +18,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
-@Controller("JobController")
+@Controller
 @AllArgsConstructor
 @RequestMapping("/jobs")
-public class JobController {
+public class GlobalJobController {
 
     private final JobOfferService jobOfferService;
     private final MediaService mediaService;
     private final EmployerProfileService employerProfileService;
     private final CandidateProfileService candidateProfileService;
+    private final LanguageConfig languageConfig;
+    private JobOfferRepository jobOfferRepository;
+    private CandidateProfileRepository candidateProfileRepository;
 
     @GetMapping("/search")
     public String getSearchResult(Authentication authentication, @RequestParam(name="t") String title, @RequestParam(name="l") String location,
@@ -62,26 +72,69 @@ public class JobController {
     }
 
     @GetMapping("/{job_id}/view")
-    public String getJobDetailsPage(@PathVariable("job_id") Long job_id,Model model,Authentication authentication){
+    public String getJobDetailsPage(Authentication authentication,@PathVariable("job_id") Long job_id,Model model){
         JobOffer jobOffer = jobOfferService.getJobById(job_id);
-        EmployerProfile employerProfile = employerProfileService.getEmployerProfileByCompanyId(jobOffer.getCompany().getId());
         if (jobOffer==null || !jobOffer.getActive()){
             return "redirect:/";
         }
-        User user;
-        if (authentication!=null){
-            user = (User) authentication.getPrincipal();
-            model.addAttribute("role",user.getRole().toString());
+        else{
+            User user;
+            CandidateProfile candidateProfile;
+            if (authentication != null){
+                user = (User) authentication.getPrincipal();
+                model.addAttribute("role",user.getRole().toString());
+                candidateProfile = candidateProfileService.getCandidateProfile(user.getId());
+            }
+            else {
+                user = null;
+                candidateProfile = null;
+            }
+            model = getCommonAttr(model,user,mediaService,jobOffer,candidateProfile);
+            return "Job/job_details";
         }
-        else user = null;
+    }
+
+    @GetMapping("/{job_id}/candidate")
+    public String passCandidate(Authentication authentication, @PathVariable("job_id") Long job_id, Model model,
+                                RedirectAttributes redirectAttributes, Locale locale){
+        JobOffer jobOffer = jobOfferService.getJobById(job_id);
+        if (jobOffer==null || !jobOffer.getActive()){
+            return "redirect:/";
+        }
+        else{
+            if (authentication != null){
+                User user = (User) authentication.getPrincipal();
+                if (user.getRole().equals(Role.CANDIDATE)){
+                    CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(user.getId());
+                    model.addAttribute("role",user.getRole().toString());
+                    model = getCommonAttr(model,user,mediaService,jobOffer,candidateProfile);
+                    if (candidateProfile.getJob_offers().contains(jobOffer)){
+                        redirectAttributes.addFlashAttribute("errorMessage","You already have been applied for this job !");
+                    }
+                    else {
+                        candidateProfileService.addCandidature(candidateProfile,jobOffer);
+                        redirectAttributes.addFlashAttribute("successMessage","Your Application was added successfully !");
+                    }
+                    return "redirect:/jobs/"+job_id+"/view";
+                }
+                else return "redirect:/";
+            }
+            else return "redirect:/login";
+        }
+    }
+
+    public Model getCommonAttr(Model model,User user,MediaService mediaService,JobOffer jobOffer,CandidateProfile candidateProfile){
+        EmployerProfile employerProfile = employerProfileService.getEmployerProfileByCompanyId(jobOffer.getCompany().getId());
         model.addAttribute("user",user);
         model.addAttribute("type","job_details");
         model.addAttribute("job",jobOffer);
         model.addAttribute("employerProfile",employerProfile);
         model.addAttribute("mediaService",mediaService);
-        model.addAttribute("candidateProfileService",candidateProfileService);
+        model.addAttribute("candidateProfile",candidateProfile);
         model.addAttribute("now", LocalDateTime.now());
         model.addAttribute("cronoUnit", ChronoUnit.DAYS);
-        return "Job/job_details";
+        return model;
     }
+
+
 }

@@ -2,9 +2,11 @@ package com.example.hireme.Service;
 
 import com.example.hireme.Exceptions.ProfileAlreadyExistException;
 import com.example.hireme.Model.Entity.CandidateProfile;
+import com.example.hireme.Model.Entity.JobOffer;
 import com.example.hireme.Model.Entity.User;
 import com.example.hireme.Repository.CandidateProfileRepository;
 import com.example.hireme.Repository.CityRepository;
+import com.example.hireme.Repository.JobOfferRepository;
 import com.example.hireme.Requests.Candidate.CandidateRegisterRequest;
 import com.example.hireme.Requests.Candidate.UpdateCandidateProfileRequest;
 import lombok.AllArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class CandidateProfileService {
     private final CandidateProfileRepository candidateProfileRepository;
     private final CityRepository cityRepository;
+    private final JobOfferRepository jobOfferRepository;
 
     public CandidateProfile createNewCandidateProfile(CandidateRegisterRequest candidateRegisterRequest,User user){
         CandidateProfile candidateProfilecheck = this.candidateProfileRepository.findByUserId(user.getId());
@@ -22,6 +25,7 @@ public class CandidateProfileService {
             throw new ProfileAlreadyExistException("Profile of user with email "+candidateRegisterRequest.getEmail()+" already exist !");
         }
         CandidateProfile candidateProfile = new CandidateProfile();
+        candidateProfile.setId(user.getId());
         candidateProfile.setFirst_name(candidateRegisterRequest.getFirst_name());
         candidateProfile.setLast_name(candidateRegisterRequest.getLast_name());
         candidateProfile.setBirth_date(candidateRegisterRequest.getBirth_date());
@@ -51,6 +55,15 @@ public class CandidateProfileService {
         candidateProfile.setCity(cityRepository.getReferenceById(updateCandidateProfileRequest.getCity()));
         candidateProfile.setMotivation_letter(updateCandidateProfileRequest.getMotivation_letter());
         return candidateProfileRepository.save(candidateProfile);
+    }
+
+    public CandidateProfile addCandidature(CandidateProfile candidateProfile, JobOffer jobOffer){
+        candidateProfile.getJob_offers().add(jobOffer);
+        return candidateProfileRepository.save(candidateProfile);
+    }
+
+    public void saveCandidateProfile(CandidateProfile candidateProfile){
+        candidateProfileRepository.save(candidateProfile);
     }
 
 }

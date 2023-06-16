@@ -26,6 +26,7 @@ public class EmployerProfileService {
             throw new ProfileAlreadyExistException("Profile of user with email "+employerRegisterRequest.getEmail()+" already exist !");
         }
         EmployerProfile employerProfile = new EmployerProfile();
+        employerProfile.setId(user.getId());
         employerProfile.setFirst_name(employerRegisterRequest.getFirst_name());
         employerProfile.setLast_name(employerRegisterRequest.getLast_name());
         employerProfile.setBirth_date(employerRegisterRequest.getBirth_date());
