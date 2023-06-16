@@ -12,6 +12,8 @@ import com.example.hireme.Requests.Candidate.UpdateCandidateProfileRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class CandidateProfileService {
@@ -62,8 +64,11 @@ public class CandidateProfileService {
         return candidateProfileRepository.save(candidateProfile);
     }
 
-    public void saveCandidateProfile(CandidateProfile candidateProfile){
-        candidateProfileRepository.save(candidateProfile);
+    public List<CandidateProfile> getCandidaturesByJob(Long offer_id){
+        return candidateProfileRepository.findCandidaturesByJob(offer_id);
+    }
+    public List<CandidateProfile> getCandidaturesByJobWithPagination(Long offer_id,Long start,Long end){
+        return candidateProfileRepository.findCandidaturesByJobWithPagination(offer_id,start,end);
     }
 
 }

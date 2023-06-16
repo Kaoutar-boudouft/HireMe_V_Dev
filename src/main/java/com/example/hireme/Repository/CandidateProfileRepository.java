@@ -18,6 +18,12 @@ public interface CandidateProfileRepository extends ProfileRepository<CandidateP
     @Query(value = "select * from candidates_profiles c where c.user_id=?1", nativeQuery = true)
     CandidateProfile findCandidateProfileByUserId(Long user_id);
 
+    @Query(value = "select * from candidates_profiles cp where cp.id in(select candidate_profile_id from candidatures where offer_id=?1)", nativeQuery = true)
+    List<CandidateProfile> findCandidaturesByJob(Long offer_id);
+
+    @Query(value = "select * from candidates_profiles cp where cp.id in(select candidate_profile_id from candidatures where offer_id=?1) limit ?2,?3", nativeQuery = true)
+    List<CandidateProfile> findCandidaturesByJobWithPagination(Long offer_id,long start,long end);
+
 
 
 

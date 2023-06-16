@@ -33,6 +33,7 @@ public class JobController {
     private final EmployerProfileService employerProfileService;
     private final MediaService mediaService;
     private final LanguageConfig languageConfig;
+    private final CandidateProfileService candidateProfileService;
 
     @GetMapping()
     public String getCompanyJobs(@RequestParam(name="page_number",required=false,defaultValue ="1") Long page_number, Authentication authentication, Model model){
@@ -142,6 +143,28 @@ public class JobController {
             redirectAttributes.addFlashAttribute("error","job with this id doesn't exist");
         }
         return "redirect:/employer/jobs";
+    }
+
+    @GetMapping("/{job_id}/candidatures")
+    public String getJobCandidaturesPage(@RequestParam(name="page_number",required=false,defaultValue ="1") Long page_number,Authentication authentication,@PathVariable("job_id") Long job_id,Model model){
+        User user = (User) authentication.getPrincipal();
+        List<CandidateProfile> candidateProfiles = candidateProfileService.getCandidaturesByJob(job_id);
+        JobOffer jobOffer = jobOfferService.getJobById(job_id);
+        if (page_number > 1 && candidateProfiles.size()<(page_number-1)*6+1){
+            return "redirect:/employer/jobs/"+job_id+"/candidatures";
+        }
+        long start = (page_number-1)*6;
+        long end = start+6;
+        int totalPages = (int) Math.ceil((double) candidateProfiles.size() / 6);
+        List<CandidateProfile> candidateProfiles1 = candidateProfileService.getCandidaturesByJobWithPagination(job_id,start,end);
+        model.addAttribute("user",user);
+        model.addAttribute("mediaService", mediaService);
+        model.addAttribute("type", "profile");
+        model.addAttribute("candidateProfiles", candidateProfiles1);
+        model.addAttribute("page",page_number);
+        model.addAttribute("totalPages",totalPages);
+        model.addAttribute("job",jobOffer);
+        return "Employer/job_candidatures";
     }
 
 
