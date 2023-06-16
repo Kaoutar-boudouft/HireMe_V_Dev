@@ -167,6 +167,17 @@ public class JobController {
         return "Employer/job_candidatures";
     }
 
+    @GetMapping("/{job_id}/candidatures/{candidate_id}")
+    public String getJobCandidaturesPage(Authentication authentication,@PathVariable("job_id") Long job_id,@PathVariable("candidate_id") long candidate_id,Model model){
+        User user = (User) authentication.getPrincipal();
+        CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(candidate_id);
+        model.addAttribute("user",user);
+        model.addAttribute("mediaService", mediaService);
+        model.addAttribute("type", "profile");
+        model.addAttribute("candidateProfile", candidateProfile);
+        return "Employer/candidate_details";
+    }
+
 
 
     public Model getCommunAttr(Model model, CreateUpdateJobRequest createUpdateJobRequest, User user){
