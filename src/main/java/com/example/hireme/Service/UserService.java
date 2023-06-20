@@ -103,4 +103,8 @@ public class UserService  implements UserDetailsService{
         VerificationToken token = new VerificationToken(verificationToken,candidate);
         verificationTokenRepository.save(token);
     }
+
+    public List<User> getUsersByRole(Role role){
+        return userRepository.findByRole(role);
+    }
 }

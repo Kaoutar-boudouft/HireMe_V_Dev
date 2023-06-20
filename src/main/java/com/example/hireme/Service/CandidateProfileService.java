@@ -21,6 +21,10 @@ public class CandidateProfileService {
     private final CityRepository cityRepository;
     private final JobOfferRepository jobOfferRepository;
 
+    public List<CandidateProfile> getAll(){
+        return candidateProfileRepository.findAll();
+    }
+
     public CandidateProfile createNewCandidateProfile(CandidateRegisterRequest candidateRegisterRequest,User user){
         CandidateProfile candidateProfilecheck = this.candidateProfileRepository.findByUserId(user.getId());
         if (candidateProfilecheck != null){
@@ -44,7 +48,7 @@ public class CandidateProfileService {
                 candidateProfile.getFirst_name(),candidateProfile.getLast_name(),candidateProfile.getBirth_date(),
                 candidateProfile.getMobile_number(),candidateProfile.getId_number(),candidateProfile.getCity().getId(),
                 candidateProfile.getCity().getCountry().getId(),candidateProfile.getMotivation_letter()
-                ,null);
+                ,null,candidateProfile.getUser().getActive());
     }
 
     public CandidateProfile updateCandidateProfile(UpdateCandidateProfileRequest updateCandidateProfileRequest,Long user_id){
@@ -56,6 +60,9 @@ public class CandidateProfileService {
         candidateProfile.setId_number(updateCandidateProfileRequest.getId_number());
         candidateProfile.setCity(cityRepository.getReferenceById(updateCandidateProfileRequest.getCity()));
         candidateProfile.setMotivation_letter(updateCandidateProfileRequest.getMotivation_letter());
+        if (updateCandidateProfileRequest.getActive()!=null){
+            candidateProfile.getUser().setActive(updateCandidateProfileRequest.getActive());
+        }
         return candidateProfileRepository.save(candidateProfile);
     }
 

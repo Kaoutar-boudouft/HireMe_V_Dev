@@ -19,6 +19,9 @@ import java.util.List;
 public class EmployerProfileService {
     private final EmployerProfileRepository employerProfileRepository;
 
+    public List<EmployerProfile> getAll(){
+        return employerProfileRepository.findAll();
+    }
     public EmployerProfile createNewEmployerProfile(EmployerRegisterRequest employerRegisterRequest, User user, Company company) {
 
         EmployerProfile employerProfileCheck = this.employerProfileRepository.findByUserId(user.getId());

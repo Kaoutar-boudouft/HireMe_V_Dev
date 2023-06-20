@@ -48,4 +48,6 @@ public class UpdateCandidateProfileRequest {
     @NotNull
     MultipartFile file;
 
+    Boolean active;
+
 }

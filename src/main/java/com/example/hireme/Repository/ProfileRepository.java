@@ -7,6 +7,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @NoRepositoryBean
 //@Primary
 public interface ProfileRepository<T extends Profile> extends JpaRepository<T, Long> {
