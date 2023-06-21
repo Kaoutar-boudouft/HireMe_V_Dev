@@ -73,43 +73,26 @@ public class UserController {
         EmailUpdateRequest emailUpdateRequest = new EmailUpdateRequest(candidateProfile.getUser().getEmail());
         PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
         UpdateCandidateProfileRequest updateCandidateProfileRequest = candidateProfileService.prepareUpdateCandidateRequest(candidateProfile);
-        List<Country> countries = countryService.getActiveCountries();
-        List<City> cities = cityService.getActiveCitiesByCountry(updateCandidateProfileRequest.getCountry());
-        Media media = mediaService.getMedia("CandidateProfile", candidate_id,"cv");
-        model.addAttribute("user",user);
-        model.addAttribute("countries",countries);
-        model.addAttribute("cities",cities);
-        model.addAttribute("media",media);
+        model = getCommAttr(model,updateCandidateProfileRequest,candidate_id,user);
         model.addAttribute("emailUpdateRequest",emailUpdateRequest);
         model.addAttribute("passwordUpdateRequest",passwordUpdateRequest);
         model.addAttribute("updateCandidateProfileRequest",updateCandidateProfileRequest);
-        model.addAttribute("type","dashboard");
-        model.addAttribute("user_id",candidate_id);
         return "Admin/update_candidate";
     }
-    @PostMapping("/candidate/{candidate_id}/update_email")
-    public String emailUpdate(Authentication authentication,@PathVariable("candidate_id") Long candidate_id, @Valid EmailUpdateRequest emailUpdateRequest,
+    @PostMapping("/{user_id}/update_email")
+    public String emailUpdate(Authentication authentication,@PathVariable("user_id") Long user_id, @Valid EmailUpdateRequest emailUpdateRequest,
                               BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model,
                               final HttpServletRequest httpServletRequest){
         User user = (User) authentication.getPrincipal();
-        CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(candidate_id);
+        CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(user_id);
         PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
         UpdateCandidateProfileRequest updateCandidateProfileRequest = candidateProfileService.prepareUpdateCandidateRequest(candidateProfile);
-        List<Country> countries = countryService.getActiveCountries();
-        List<City> cities = cityService.getActiveCitiesByCountry(updateCandidateProfileRequest.getCountry());
-        Media media = mediaService.getMedia("CandidateProfile", candidate_id,"cv");
-        model.addAttribute("user",user);
-        model.addAttribute("countries",countries);
-        model.addAttribute("cities",cities);
-        model.addAttribute("media",media);
+        model = getCommAttr(model,updateCandidateProfileRequest,user_id,user);
         model.addAttribute("passwordUpdateRequest",passwordUpdateRequest);
         model.addAttribute("updateCandidateProfileRequest",updateCandidateProfileRequest);
-        model.addAttribute("type","dashboard");
-        model.addAttribute("user_id",candidate_id);
         redirectAttributes.addFlashAttribute("emailUpdateRequest", emailUpdateRequest);
         if (bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("error", bindingResult);
-            System.out.println("kaoutar error");
             return "Admin/update_candidate";
         }
         try {
@@ -117,43 +100,35 @@ public class UserController {
             if (u!=null){
                 publisher.publishEvent(new RegistrationSuccessEvent(u,appService.appUrl(httpServletRequest),locale));
                 redirectAttributes.addFlashAttribute("success","Email updated successfully ! please verify it");
-                return "redirect:/admin/users/candidate/"+candidate_id+"/edit";
+                return "redirect:/admin/users/candidate/"+user_id+"/edit";
             }
             redirectAttributes.addFlashAttribute("errorMessage","update error");
-            return "redirect:/admin/users/candidate/"+candidate_id+"/edit";
+            return "redirect:/admin/users/candidate/"+user_id+"/edit";
         }
         catch (UserAlreadyExistException e){
             redirectAttributes.addFlashAttribute("warning",languageConfig.messageSource().getMessage("email_exists",new Object[] {}, locale));
-            return "redirect:/admin/users/candidate/"+candidate_id+"/edit";
+            return "redirect:/admin/users/candidate/"+user_id+"/edit";
         }
     }
 
-    @PostMapping("/candidate/{candidate_id}/update_password")
-    public String passwordUpdate(Authentication authentication,@PathVariable("candidate_id") Long candidate_id, @Valid PasswordUpdateRequest passwordUpdateRequest,
+    @PostMapping("/{user_id}/update_password")
+    public String passwordUpdate(Authentication authentication,@PathVariable("user_id") Long user_id, @Valid PasswordUpdateRequest passwordUpdateRequest,
                               BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model,
                               final HttpServletRequest httpServletRequest){
         User user = (User) authentication.getPrincipal();
-        CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(candidate_id);
+        CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(user_id);
         EmailUpdateRequest emailUpdateRequest = new EmailUpdateRequest(candidateProfile.getUser().getEmail());
         UpdateCandidateProfileRequest updateCandidateProfileRequest = candidateProfileService.prepareUpdateCandidateRequest(candidateProfile);
-        List<Country> countries = countryService.getActiveCountries();
-        List<City> cities = cityService.getActiveCitiesByCountry(updateCandidateProfileRequest.getCountry());
-        Media media = mediaService.getMedia("CandidateProfile", candidate_id,"cv");
-        model.addAttribute("user",user);
-        model.addAttribute("countries",countries);
-        model.addAttribute("cities",cities);
-        model.addAttribute("media",media);
+        model = getCommAttr(model,updateCandidateProfileRequest,user_id,user);
         model.addAttribute("emailUpdateRequest",emailUpdateRequest);
         model.addAttribute("updateCandidateProfileRequest",updateCandidateProfileRequest);
-        model.addAttribute("type","dashboard");
-        model.addAttribute("user_id",candidate_id);
         redirectAttributes.addFlashAttribute("passwordUpdateRequest", passwordUpdateRequest);
         if (bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("error", bindingResult);
             return "Admin/update_candidate";
         }
         redirectAttributes.addFlashAttribute("success",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
-        return "redirect:/admin/users/candidate/"+candidate_id+"/edit";
+        return "redirect:/admin/users/candidate/"+user_id+"/edit";
     }
 
     @PostMapping("/candidate/{candidate_id}/update_profile")
@@ -164,16 +139,8 @@ public class UserController {
         CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(candidate_id);
         PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
         EmailUpdateRequest emailUpdateRequest = new EmailUpdateRequest(candidateProfile.getUser().getEmail());
-        List<Country> countries = countryService.getActiveCountries();
-        List<City> cities = cityService.getActiveCitiesByCountry(updateCandidateProfileRequest.getCountry());
-        Media media = mediaService.getMedia("CandidateProfile", candidate_id,"cv");
-        model.addAttribute("user",user);
-        model.addAttribute("countries",countries);
-        model.addAttribute("cities",cities);
-        model.addAttribute("media",media);
+        model = getCommAttr(model,updateCandidateProfileRequest,candidate_id,user);
         model.addAttribute("emailUpdateRequest",emailUpdateRequest);
-        model.addAttribute("type","dashboard");
-        model.addAttribute("user_id",candidate_id);
         model.addAttribute("passwordUpdateRequest", passwordUpdateRequest);
         redirectAttributes.addFlashAttribute("updateCandidateProfileRequest", updateCandidateProfileRequest);
         if (bindingResult.hasErrors()){
@@ -185,6 +152,7 @@ public class UserController {
         System.out.println("kaoutar"+updateCandidateProfileRequest.getActive());
         try {
             Media checkMedia = mediaService.getMedia("CandidateProfile",candidateProfile.getId(),"cv");
+            Media media;
             if (checkMedia!=null){
                 media = checkMedia;
             }
@@ -200,5 +168,18 @@ public class UserController {
         }
         redirectAttributes.addFlashAttribute("success",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
         return "redirect:/admin/users/candidate/"+candidate_id+"/edit";
+    }
+
+    public Model getCommAttr(Model model,UpdateCandidateProfileRequest updateCandidateProfileRequest,Long user_id,User user){
+        List<Country> countries = countryService.getActiveCountries();
+        List<City> cities = cityService.getActiveCitiesByCountry(updateCandidateProfileRequest.getCountry());
+        Media media = mediaService.getMedia("CandidateProfile", user_id,"cv");
+        model.addAttribute("user",user);
+        model.addAttribute("countries",countries);
+        model.addAttribute("cities",cities);
+        model.addAttribute("media",media);
+        model.addAttribute("type","dashboard");
+        model.addAttribute("user_id",user_id);
+        return model;
     }
 }
