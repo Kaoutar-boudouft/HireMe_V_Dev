@@ -7,6 +7,7 @@ import com.example.hireme.Model.Entity.*;
 import com.example.hireme.Model.Profile;
 import com.example.hireme.Model.Role;
 import com.example.hireme.MultiLanguages.LanguageConfig;
+import com.example.hireme.Requests.Admin.UpdateAdminProfileRequest;
 import com.example.hireme.Requests.Candidate.UpdateCandidateProfileRequest;
 import com.example.hireme.Requests.EmailUpdateRequest;
 import com.example.hireme.Requests.Employer.UpdateEmployerProfileRequest;
@@ -282,4 +283,105 @@ public class UserController {
     //employer routes end
 
     //admin routes :
+
+    @GetMapping("/admin/{admin_id}/edit")
+    public String getAdminUpdatePage(@PathVariable("admin_id") Long admin_id, Authentication authentication, Model model){
+        User user = (User) authentication.getPrincipal();
+        AdminProfile adminProfile = adminProfileService.getAdminProfile(admin_id);
+        EmailUpdateRequest emailUpdateRequest = new EmailUpdateRequest(adminProfile.getUser().getEmail());
+        PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
+        UpdateAdminProfileRequest updateAdminProfileRequest = adminProfileService.prepareUpdateAdminRequest(adminProfile);
+        model = getCandidateCommAttr(model,updateAdminProfileRequest,admin_id,user);
+        model.addAttribute("emailUpdateRequest",emailUpdateRequest);
+        model.addAttribute("passwordUpdateRequest",passwordUpdateRequest);
+        model.addAttribute("updateAdminProfileRequest",updateAdminProfileRequest);
+        return "Admin/update_admin";
+    }
+    @PostMapping("/admin/{user_id}/update_email")
+    public String adminEmailUpdate(Authentication authentication,@PathVariable("user_id") Long user_id, @Valid EmailUpdateRequest emailUpdateRequest,
+                                       BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model,
+                                       final HttpServletRequest httpServletRequest){
+        User user = (User) authentication.getPrincipal();
+        AdminProfile adminProfile = adminProfileService.getAdminProfile(user_id);
+        PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
+        UpdateAdminProfileRequest updateAdminProfileRequest = adminProfileService.prepareUpdateAdminRequest(adminProfile);
+        model = getCandidateCommAttr(model,updateAdminProfileRequest,user_id,user);
+        model.addAttribute("passwordUpdateRequest",passwordUpdateRequest);
+        model.addAttribute("updateAdminProfileRequest",updateAdminProfileRequest);
+        redirectAttributes.addFlashAttribute("emailUpdateRequest", emailUpdateRequest);
+        if (bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("error", bindingResult);
+            return "Admin/update_admin";
+        }
+        try {
+            User u = userService.updateUserEmail(adminProfile.getUser(),emailUpdateRequest);
+            if (u!=null){
+                publisher.publishEvent(new RegistrationSuccessEvent(u,appService.appUrl(httpServletRequest),locale));
+                redirectAttributes.addFlashAttribute("success","Email updated successfully ! please verify it");
+                return "redirect:/admin/users/admin/"+user_id+"/edit";
+            }
+            redirectAttributes.addFlashAttribute("errorMessage","update error");
+            return "redirect:/admin/users/admin/"+user_id+"/edit";
+        }
+        catch (UserAlreadyExistException e){
+            redirectAttributes.addFlashAttribute("warning",languageConfig.messageSource().getMessage("email_exists",new Object[] {}, locale));
+            return "redirect:/admin/users/admin/"+user_id+"/edit";
+        }
+    }
+
+    @PostMapping("/admin/{user_id}/update_password")
+    public String adminPasswordUpdate(Authentication authentication,@PathVariable("user_id") Long user_id, @Valid PasswordUpdateRequest passwordUpdateRequest,
+                                          BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model,
+                                          final HttpServletRequest httpServletRequest){
+        User user = (User) authentication.getPrincipal();
+        AdminProfile adminProfile = adminProfileService.getAdminProfile(user_id);
+        EmailUpdateRequest emailUpdateRequest = new EmailUpdateRequest(adminProfile.getUser().getEmail());
+        UpdateAdminProfileRequest updateAdminProfileRequest = adminProfileService.prepareUpdateAdminRequest(adminProfile);
+        model = getCandidateCommAttr(model,updateAdminProfileRequest,user_id,user);
+        model.addAttribute("emailUpdateRequest",emailUpdateRequest);
+        model.addAttribute("updateAdminProfileRequest",updateAdminProfileRequest);
+        redirectAttributes.addFlashAttribute("passwordUpdateRequest", passwordUpdateRequest);
+        if (bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("error", bindingResult);
+            return "Admin/update_admin";
+        }
+        redirectAttributes.addFlashAttribute("success",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
+        return "redirect:/admin/users/admin/"+user_id+"/edit";
+    }
+
+    @PostMapping("/admin/{admin_id}/update_profile")
+    public String adminProfileUpdate(Authentication authentication,@PathVariable("admin_id") Long admin_id, @Valid UpdateAdminProfileRequest updateAdminProfileRequest,
+                                         BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model,
+                                         final HttpServletRequest httpServletRequest){
+        User user = (User) authentication.getPrincipal();
+        AdminProfile adminProfile = adminProfileService.getAdminProfile(admin_id);
+        PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
+        EmailUpdateRequest emailUpdateRequest = new EmailUpdateRequest(adminProfile.getUser().getEmail());
+        model = getCandidateCommAttr(model,updateAdminProfileRequest,admin_id,user);
+        model.addAttribute("emailUpdateRequest",emailUpdateRequest);
+        model.addAttribute("passwordUpdateRequest", passwordUpdateRequest);
+        redirectAttributes.addFlashAttribute("updateAdminProfileRequest", updateAdminProfileRequest);
+        if (bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("error", bindingResult.getFieldError().toString());
+            return "Admin/update_admin";
+        }
+        adminProfileService.updateAdminProfile(updateAdminProfileRequest,adminProfile.getUser().getId());
+        redirectAttributes.addFlashAttribute("success",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
+        return "redirect:/admin/users/admin/"+admin_id+"/edit";
+    }
+
+    public Model getCandidateCommAttr(Model model,UpdateAdminProfileRequest updateAdminProfileRequest,Long user_id,User user){
+        List<Country> countries = countryService.getActiveCountries();
+        List<City> cities = cityService.getActiveCitiesByCountry(updateAdminProfileRequest.getCountry());
+        Media media = mediaService.getMedia("CandidateProfile", user_id,"cv");
+        model.addAttribute("user",user);
+        model.addAttribute("countries",countries);
+        model.addAttribute("cities",cities);
+        model.addAttribute("media",media);
+        model.addAttribute("type","dashboard");
+        model.addAttribute("user_id",user_id);
+        return model;
+    }
+
+
 }

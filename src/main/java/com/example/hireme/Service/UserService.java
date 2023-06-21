@@ -76,6 +76,23 @@ public class UserService  implements UserDetailsService{
         return newUser;
     }
 
+    /*public User registerAdminUser(Adm employerRegisterRequest){
+        Optional<User> user = this.findByEmail(employerRegisterRequest.getEmail());
+        if (user.isPresent()){
+            throw new UserAlreadyExistException("User with email "+employerRegisterRequest.getEmail()+" already exist !");
+        }
+        User newUser = new User();
+        newUser.setEmail(employerRegisterRequest.getEmail());
+        newUser.setCreated_at(LocalDateTime.now());
+        newUser.setRole(Role.EMPLOYER);
+        newUser.setActive(false);
+        newUser.setPassword(passwordEncoder.encode(employerRegisterRequest.getPassword()));
+        userRepository.save(newUser);
+        Company newCompany = companyService.createNewCompany(employerRegisterRequest);
+        employerProfileService.createNewEmployerProfile(employerRegisterRequest,newUser,newCompany);
+        return newUser;
+    }*/
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
