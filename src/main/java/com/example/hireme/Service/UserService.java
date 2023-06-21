@@ -39,6 +39,9 @@ public class UserService  implements UserDetailsService{
     public Optional<User> findByEmail(String email){
         return userRepository.findByEmail(email);
     }
+    public User getById(Long id){
+        return userRepository.getReferenceById(id);
+    }
 
     public User registerCandidateUser(CandidateRegisterRequest candidateRegisterRequest){
         Optional<User> user = this.findByEmail(candidateRegisterRequest.getEmail());
