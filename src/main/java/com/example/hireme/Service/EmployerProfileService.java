@@ -43,6 +43,9 @@ public class EmployerProfileService {
     public EmployerProfile getEmployerProfile(Long user_id){
         return employerProfileRepository.findByUserId(user_id);
     }
+    public EmployerProfile getEmployerProfileById(Long profile_id){
+        return employerProfileRepository.getReferenceById(profile_id);
+    }
 
     public UpdateEmployerProfileRequest prepareUpdateEmployerRequest(EmployerProfile employerProfile){
         return new UpdateEmployerProfileRequest(

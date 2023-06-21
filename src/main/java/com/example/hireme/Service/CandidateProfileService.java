@@ -43,11 +43,17 @@ public class CandidateProfileService {
         return candidateProfileRepository.findByUserId(user_id);
     }
 
+    public CandidateProfile getCandidateProfileById(Long profile_id){
+        return candidateProfileRepository.getReferenceById(profile_id);
+    }
+
     public UpdateCandidateProfileRequest prepareUpdateCandidateRequest(CandidateProfile candidateProfile){
         return new UpdateCandidateProfileRequest(
                 candidateProfile.getFirst_name(),candidateProfile.getLast_name(),candidateProfile.getBirth_date(),
-                candidateProfile.getMobile_number(),candidateProfile.getId_number(),candidateProfile.getCity().getId(),
-                candidateProfile.getCity().getCountry().getId(),candidateProfile.getMotivation_letter()
+                candidateProfile.getMobile_number(),candidateProfile.getId_number(),
+                (candidateProfile.getCity()!=null?candidateProfile.getCity().getId():null),
+                (candidateProfile.getCity()!=null?candidateProfile.getCity().getCountry().getId():null)
+                ,candidateProfile.getMotivation_letter()
                 ,null,candidateProfile.getUser().getActive());
     }
 

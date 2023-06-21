@@ -7,7 +7,9 @@ import com.example.hireme.Model.Entity.*;
 import com.example.hireme.Model.Profile;
 import com.example.hireme.Model.Role;
 import com.example.hireme.MultiLanguages.LanguageConfig;
+import com.example.hireme.Requests.Admin.CreateAdminRequest;
 import com.example.hireme.Requests.Admin.UpdateAdminProfileRequest;
+import com.example.hireme.Requests.Candidate.CandidateRegisterRequest;
 import com.example.hireme.Requests.Candidate.UpdateCandidateProfileRequest;
 import com.example.hireme.Requests.EmailUpdateRequest;
 import com.example.hireme.Requests.Employer.UpdateEmployerProfileRequest;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -65,6 +68,7 @@ public class UserController {
             return "redirect:/admin/users/candidate";
         }
         model.addAttribute("user",user);
+        model.addAttribute("user_type",type);
         model.addAttribute("type","dashboard");
         return "Admin/users";
     }
@@ -73,7 +77,7 @@ public class UserController {
     @GetMapping("/candidate/{candidate_id}/edit")
     public String getCandidateUpdatePage(@PathVariable("candidate_id") Long candidate_id, Authentication authentication, Model model){
         User user = (User) authentication.getPrincipal();
-        CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(candidate_id);
+        CandidateProfile candidateProfile = candidateProfileService.getCandidateProfileById(candidate_id);
         EmailUpdateRequest emailUpdateRequest = new EmailUpdateRequest(candidateProfile.getUser().getEmail());
         PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
         UpdateCandidateProfileRequest updateCandidateProfileRequest = candidateProfileService.prepareUpdateCandidateRequest(candidateProfile);
@@ -88,7 +92,7 @@ public class UserController {
                               BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model,
                               final HttpServletRequest httpServletRequest){
         User user = (User) authentication.getPrincipal();
-        CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(user_id);
+        CandidateProfile candidateProfile = candidateProfileService.getCandidateProfileById(user_id);
         PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
         UpdateCandidateProfileRequest updateCandidateProfileRequest = candidateProfileService.prepareUpdateCandidateRequest(candidateProfile);
         model = getCandidateCommAttr(model,updateCandidateProfileRequest,user_id,user);
@@ -120,7 +124,7 @@ public class UserController {
                               BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model,
                               final HttpServletRequest httpServletRequest){
         User user = (User) authentication.getPrincipal();
-        CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(user_id);
+        CandidateProfile candidateProfile = candidateProfileService.getCandidateProfileById(user_id);
         EmailUpdateRequest emailUpdateRequest = new EmailUpdateRequest(candidateProfile.getUser().getEmail());
         UpdateCandidateProfileRequest updateCandidateProfileRequest = candidateProfileService.prepareUpdateCandidateRequest(candidateProfile);
         model = getCandidateCommAttr(model,updateCandidateProfileRequest,user_id,user);
@@ -140,7 +144,7 @@ public class UserController {
                                  BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model,
                                  final HttpServletRequest httpServletRequest){
         User user = (User) authentication.getPrincipal();
-        CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(candidate_id);
+        CandidateProfile candidateProfile = candidateProfileService.getCandidateProfileById(candidate_id);
         PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
         EmailUpdateRequest emailUpdateRequest = new EmailUpdateRequest(candidateProfile.getUser().getEmail());
         model = getCandidateCommAttr(model,updateCandidateProfileRequest,candidate_id,user);
@@ -191,7 +195,7 @@ public class UserController {
     @GetMapping("/employer/{employer_id}/edit")
     public String getEmployerUpdatePage(@PathVariable("employer_id") Long employer_id, Authentication authentication, Model model){
         User user = (User) authentication.getPrincipal();
-        EmployerProfile employerProfile = employerProfileService.getEmployerProfile(employer_id);
+        EmployerProfile employerProfile = employerProfileService.getEmployerProfileById(employer_id);
         EmailUpdateRequest emailUpdateRequest = new EmailUpdateRequest(employerProfile.getUser().getEmail());
         PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
         UpdateEmployerProfileRequest updateEmployerProfileRequest = employerProfileService.prepareUpdateEmployerRequest(employerProfile);
@@ -207,7 +211,7 @@ public class UserController {
                                  BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model,
                                  final HttpServletRequest httpServletRequest){
         User user = (User) authentication.getPrincipal();
-        EmployerProfile employerProfile = employerProfileService.getEmployerProfile(user_id);
+        EmployerProfile employerProfile = employerProfileService.getEmployerProfileById(user_id);
         EmailUpdateRequest emailUpdateRequest = new EmailUpdateRequest(employerProfile.getUser().getEmail());
         UpdateEmployerProfileRequest updateEmployerProfileRequest = employerProfileService.prepareUpdateEmployerRequest(employerProfile);
         model = getEmployerCommAttr(model,updateEmployerProfileRequest,user_id,user);
@@ -226,7 +230,7 @@ public class UserController {
                               BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model,
                               final HttpServletRequest httpServletRequest){
         User user = (User) authentication.getPrincipal();
-        EmployerProfile employerProfile = employerProfileService.getEmployerProfile(user_id);
+        EmployerProfile employerProfile = employerProfileService.getEmployerProfileById(user_id);
         PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
         UpdateEmployerProfileRequest updateEmployerProfileRequest = employerProfileService.prepareUpdateEmployerRequest(employerProfile);
         model = getEmployerCommAttr(model,updateEmployerProfileRequest,user_id,user);
@@ -257,7 +261,7 @@ public class UserController {
     public String employerProfileUpdate(Authentication authentication,@PathVariable("employer_id") Long employer_id, @Valid UpdateEmployerProfileRequest updateEmployerProfileRequest,
                                         BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model) {
         User user = (User) authentication.getPrincipal();
-        EmployerProfile employerProfile = employerProfileService.getEmployerProfile(employer_id);
+        EmployerProfile employerProfile = employerProfileService.getEmployerProfileById(employer_id);
         PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
         EmailUpdateRequest emailUpdateRequest = new EmailUpdateRequest(employerProfile.getUser().getEmail());
         model = getEmployerCommAttr(model,updateEmployerProfileRequest,employer_id,user);
@@ -287,11 +291,11 @@ public class UserController {
     @GetMapping("/admin/{admin_id}/edit")
     public String getAdminUpdatePage(@PathVariable("admin_id") Long admin_id, Authentication authentication, Model model){
         User user = (User) authentication.getPrincipal();
-        AdminProfile adminProfile = adminProfileService.getAdminProfile(admin_id);
+        AdminProfile adminProfile = adminProfileService.getAdminProfileById(admin_id);
         EmailUpdateRequest emailUpdateRequest = new EmailUpdateRequest(adminProfile.getUser().getEmail());
         PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
         UpdateAdminProfileRequest updateAdminProfileRequest = adminProfileService.prepareUpdateAdminRequest(adminProfile);
-        model = getCandidateCommAttr(model,updateAdminProfileRequest,admin_id,user);
+        model = getAdminCommAttr(model,updateAdminProfileRequest,admin_id,user);
         model.addAttribute("emailUpdateRequest",emailUpdateRequest);
         model.addAttribute("passwordUpdateRequest",passwordUpdateRequest);
         model.addAttribute("updateAdminProfileRequest",updateAdminProfileRequest);
@@ -302,10 +306,10 @@ public class UserController {
                                        BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model,
                                        final HttpServletRequest httpServletRequest){
         User user = (User) authentication.getPrincipal();
-        AdminProfile adminProfile = adminProfileService.getAdminProfile(user_id);
+        AdminProfile adminProfile = adminProfileService.getAdminProfileById(user_id);
         PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
         UpdateAdminProfileRequest updateAdminProfileRequest = adminProfileService.prepareUpdateAdminRequest(adminProfile);
-        model = getCandidateCommAttr(model,updateAdminProfileRequest,user_id,user);
+        model = getAdminCommAttr(model,updateAdminProfileRequest,user_id,user);
         model.addAttribute("passwordUpdateRequest",passwordUpdateRequest);
         model.addAttribute("updateAdminProfileRequest",updateAdminProfileRequest);
         redirectAttributes.addFlashAttribute("emailUpdateRequest", emailUpdateRequest);
@@ -334,10 +338,10 @@ public class UserController {
                                           BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model,
                                           final HttpServletRequest httpServletRequest){
         User user = (User) authentication.getPrincipal();
-        AdminProfile adminProfile = adminProfileService.getAdminProfile(user_id);
+        AdminProfile adminProfile = adminProfileService.getAdminProfileById(user_id);
         EmailUpdateRequest emailUpdateRequest = new EmailUpdateRequest(adminProfile.getUser().getEmail());
         UpdateAdminProfileRequest updateAdminProfileRequest = adminProfileService.prepareUpdateAdminRequest(adminProfile);
-        model = getCandidateCommAttr(model,updateAdminProfileRequest,user_id,user);
+        model = getAdminCommAttr(model,updateAdminProfileRequest,user_id,user);
         model.addAttribute("emailUpdateRequest",emailUpdateRequest);
         model.addAttribute("updateAdminProfileRequest",updateAdminProfileRequest);
         redirectAttributes.addFlashAttribute("passwordUpdateRequest", passwordUpdateRequest);
@@ -354,10 +358,10 @@ public class UserController {
                                          BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model,
                                          final HttpServletRequest httpServletRequest){
         User user = (User) authentication.getPrincipal();
-        AdminProfile adminProfile = adminProfileService.getAdminProfile(admin_id);
+        AdminProfile adminProfile = adminProfileService.getAdminProfileById(admin_id);
         PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
         EmailUpdateRequest emailUpdateRequest = new EmailUpdateRequest(adminProfile.getUser().getEmail());
-        model = getCandidateCommAttr(model,updateAdminProfileRequest,admin_id,user);
+        model = getAdminCommAttr(model,updateAdminProfileRequest,admin_id,user);
         model.addAttribute("emailUpdateRequest",emailUpdateRequest);
         model.addAttribute("passwordUpdateRequest", passwordUpdateRequest);
         redirectAttributes.addFlashAttribute("updateAdminProfileRequest", updateAdminProfileRequest);
@@ -370,7 +374,7 @@ public class UserController {
         return "redirect:/admin/users/admin/"+admin_id+"/edit";
     }
 
-    public Model getCandidateCommAttr(Model model,UpdateAdminProfileRequest updateAdminProfileRequest,Long user_id,User user){
+    public Model getAdminCommAttr(Model model,UpdateAdminProfileRequest updateAdminProfileRequest,Long user_id,User user){
         List<Country> countries = countryService.getActiveCountries();
         List<City> cities = cityService.getActiveCitiesByCountry(updateAdminProfileRequest.getCountry());
         Media media = mediaService.getMedia("CandidateProfile", user_id,"cv");
@@ -383,5 +387,66 @@ public class UserController {
         return model;
     }
 
+    @GetMapping("/admin/create")
+    public String getAdminCreatePage(Authentication authentication, Model model){
+        User user = (User) authentication.getPrincipal();
+        CreateAdminRequest createAdminRequest = new CreateAdminRequest();
+        List<Country> countries = countryService.getActiveCountries();
+        List<City> cities = new ArrayList<City>();
+        model.addAttribute("createAdminRequest",createAdminRequest);
+        model.addAttribute("countries",countries);
+        model.addAttribute("cities",cities);
+        model.addAttribute("user",user);
+        model.addAttribute("type","dashboard");
+        return "Admin/create_admin";
+    }
+
+    @PostMapping("/admin/store")
+    public String registerAdmin(Authentication authentication,@Valid CreateAdminRequest createAdminRequest,
+                                                  BindingResult bindingResult,
+                                                  final HttpServletRequest httpServletRequest,
+                                                  RedirectAttributes redirectAttributes,Locale locale,Model model){
+        User user = (User) authentication.getPrincipal();
+        List<Country> countries = countryService.getActiveCountries();
+        List<City> cities = cityService.getActiveCitiesByCountry(createAdminRequest.getCountry());
+        redirectAttributes.addFlashAttribute("createAdminRequest",createAdminRequest);
+        model.addAttribute("countries",countries);
+        model.addAttribute("cities",cities);
+        model.addAttribute("user",user);
+        model.addAttribute("type","dashboard");
+        if (bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("error", bindingResult);
+            return "Admin/create_admin";
+        }
+        else {
+            try {
+                User newUser = userService.registerAdminUser(createAdminRequest);
+                if (newUser!=null){
+                    publisher.publishEvent(new RegistrationSuccessEvent(newUser,appService.appUrl(httpServletRequest),locale));
+                    redirectAttributes.addFlashAttribute("success",languageConfig.messageSource().getMessage("create",new Object[] {}, locale));
+                    return "redirect:/admin/users/admin";
+                }
+                else {
+                    redirectAttributes.addFlashAttribute("errorMessage","creation error");
+                    return "redirect:/admin/users/admin/create";
+                }
+            }
+            catch (UserAlreadyExistException e){
+                model.addAttribute("createAdminRequest",createAdminRequest);
+                model.addAttribute("warning",languageConfig.messageSource().getMessage("email_exists",new Object[] {}, locale));
+                return "Admin/create_admin";
+            }
+        }
+
+    }
+
+    @GetMapping("/delete/{user_id}")
+    public String deleteUser(@PathVariable("user_id") Long user_id,
+                                RedirectAttributes redirectAttributes,Locale locale,Model model){
+        String role = userService.getById(user_id).getRole().name().toLowerCase();
+        userService.removeUser(userService.getById(user_id));
+        model.addAttribute("successMessage",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
+        return "redirect:/admin/users/"+role;
+    }
 
 }

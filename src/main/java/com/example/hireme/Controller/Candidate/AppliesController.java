@@ -36,9 +36,8 @@ public class AppliesController {
         long end = start+4;
         int totalPages = (int) Math.ceil((double) jobOffers.size() / 4);
         List<JobOffer> paginatedJobsList = jobOfferService.getCandidateCandidaturesWithPagination(user.getId(),start,end);
-        Media media = mediaService.getMedia("Company",user.getId(),"company_logo");
         model.addAttribute("user",user);
-        model.addAttribute("media", media);
+        model.addAttribute("mediaService", mediaService);
         model.addAttribute("type", "profile");
         model.addAttribute("jobOffers", paginatedJobsList);
         model.addAttribute("page",page_number);

@@ -1,11 +1,15 @@
 package com.example.hireme.Service;
 
+import com.example.hireme.Exceptions.ProfileAlreadyExistException;
 import com.example.hireme.Model.Entity.AdminProfile;
 import com.example.hireme.Model.Entity.CandidateProfile;
 import com.example.hireme.Model.Entity.EmployerProfile;
+import com.example.hireme.Model.Entity.User;
 import com.example.hireme.Repository.AdminProfileRepository;
 import com.example.hireme.Repository.CityRepository;
+import com.example.hireme.Requests.Admin.CreateAdminRequest;
 import com.example.hireme.Requests.Admin.UpdateAdminProfileRequest;
+import com.example.hireme.Requests.Candidate.CandidateRegisterRequest;
 import com.example.hireme.Requests.Employer.UpdateEmployerProfileRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +28,26 @@ public class AdminProfileService {
 
     public AdminProfile getAdminProfile(Long user_id){
         return adminProfileRepository.findByUserId(user_id);
+    }
+    public AdminProfile getAdminProfileById(Long profile_id){
+        return adminProfileRepository.getReferenceById(profile_id);
+    }
+
+    public AdminProfile createNewAdminProfile(CreateAdminRequest createAdminRequest, User user){
+        AdminProfile adminProfileCheck = this.adminProfileRepository.findByUserId(user.getId());
+        if (adminProfileCheck != null){
+            throw new ProfileAlreadyExistException("Profile of user with email "+createAdminRequest.getEmail()+" already exist !");
+        }
+        AdminProfile adminProfile = new AdminProfile();
+        adminProfile.setId(user.getId());
+        adminProfile.setFirst_name(createAdminRequest.getFirst_name());
+        adminProfile.setLast_name(createAdminRequest.getLast_name());
+        adminProfile.setBirth_date(createAdminRequest.getBirth_date());
+        adminProfile.setId_number(createAdminRequest.getId_number());
+        adminProfile.setMobile_number(createAdminRequest.getMobile());
+        adminProfile.setCity(cityRepository.getReferenceById(createAdminRequest.getCity()));
+        adminProfile.setUser(user);
+        return adminProfileRepository.save(adminProfile);
     }
 
     public UpdateAdminProfileRequest prepareUpdateAdminRequest(AdminProfile adminProfile){

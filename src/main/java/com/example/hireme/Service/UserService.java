@@ -1,12 +1,10 @@
 package com.example.hireme.Service;
 
 import com.example.hireme.Exceptions.UserAlreadyExistException;
-import com.example.hireme.Model.Entity.Company;
-import com.example.hireme.Model.Entity.User;
-import com.example.hireme.Model.Entity.VerificationToken;
+import com.example.hireme.Model.Entity.*;
 import com.example.hireme.Model.Role;
-import com.example.hireme.Repository.UserRepository;
-import com.example.hireme.Repository.VerificationTokenRepository;
+import com.example.hireme.Repository.*;
+import com.example.hireme.Requests.Admin.CreateAdminRequest;
 import com.example.hireme.Requests.Candidate.CandidateRegisterRequest;
 import com.example.hireme.Requests.EmailUpdateRequest;
 import com.example.hireme.Requests.Employer.EmployerRegisterRequest;
@@ -27,7 +25,12 @@ import java.util.Optional;
 public class UserService  implements UserDetailsService{
     private final UserRepository userRepository;
     private final CandidateProfileService candidateProfileService;
+    private final CandidateProfileRepository candidateProfileRepository;
+    private final EmployerProfileRepository employerProfileRepository;
+    private final AdminProfileRepository adminProfileRepository;
+    private final CompanyRepository companyRepository;
     private final EmployerProfileService employerProfileService;
+    private final AdminProfileService adminProfileService;
     private final CompanyService companyService;
     private final PasswordEncoder passwordEncoder;
     private final VerificationTokenRepository verificationTokenRepository;
@@ -76,22 +79,22 @@ public class UserService  implements UserDetailsService{
         return newUser;
     }
 
-    /*public User registerAdminUser(Adm employerRegisterRequest){
-        Optional<User> user = this.findByEmail(employerRegisterRequest.getEmail());
+    public User registerAdminUser(CreateAdminRequest createAdminRequest){
+        Optional<User> user = this.findByEmail(createAdminRequest.getEmail());
         if (user.isPresent()){
-            throw new UserAlreadyExistException("User with email "+employerRegisterRequest.getEmail()+" already exist !");
+            throw new UserAlreadyExistException("User with email "+createAdminRequest.getEmail()+" already exist !");
         }
         User newUser = new User();
-        newUser.setEmail(employerRegisterRequest.getEmail());
+        newUser.setEmail(createAdminRequest.getEmail());
         newUser.setCreated_at(LocalDateTime.now());
-        newUser.setRole(Role.EMPLOYER);
-        newUser.setActive(false);
-        newUser.setPassword(passwordEncoder.encode(employerRegisterRequest.getPassword()));
+        newUser.setRole(Role.ADMIN);
+        newUser.setActive(true);
+        newUser.setPassword(passwordEncoder.encode(createAdminRequest.getPassword()));
         userRepository.save(newUser);
-        Company newCompany = companyService.createNewCompany(employerRegisterRequest);
-        employerProfileService.createNewEmployerProfile(employerRegisterRequest,newUser,newCompany);
+        System.out.println("inside user sevice kaoutar "+newUser.getId());
+        adminProfileService.createNewAdminProfile(createAdminRequest,newUser);
         return newUser;
-    }*/
+    }
 
 
     @Override
@@ -126,5 +129,27 @@ public class UserService  implements UserDetailsService{
 
     public List<User> getUsersByRole(Role role){
         return userRepository.findByRole(role);
+    }
+
+    public void removeUser(User user){
+        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByUserId(user.getId());
+        if (verificationToken.isPresent()){
+            verificationTokenRepository.deleteByUserId(user.getId());
+        }
+        if (user.getRole().equals(Role.CANDIDATE.name())){
+            CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(user.getId());
+            candidateProfileRepository.delete(candidateProfile);
+        }
+        else if (user.getRole().equals(Role.EMPLOYER.name())) {
+            EmployerProfile employerProfile = employerProfileService.getEmployerProfile(user.getId());
+            Company company = employerProfile.getCompany();
+            companyRepository.delete(company);
+            employerProfileRepository.delete(employerProfile);
+        }
+        else if (user.getRole().equals(Role.ADMIN.name())) {
+            AdminProfile adminProfile = adminProfileService.getAdminProfile(user.getId());
+            adminProfileRepository.delete(adminProfile);
+        }
+        userRepository.delete(user);
     }
 }
