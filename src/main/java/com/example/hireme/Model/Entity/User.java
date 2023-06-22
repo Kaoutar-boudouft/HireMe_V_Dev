@@ -37,7 +37,7 @@ public class User implements UserDetails {
 
     private LocalDateTime created_at;
 
-    @OneToOne(mappedBy = "user" ,cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user")
     @PrimaryKeyJoinColumn
     private Profile profile;
 

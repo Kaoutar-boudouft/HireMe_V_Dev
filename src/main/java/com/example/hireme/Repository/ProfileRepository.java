@@ -14,5 +14,5 @@ import java.util.List;
 public interface ProfileRepository<T extends Profile> extends JpaRepository<T, Long> {
 
     T findByUserId(Long user_id);
-
+    
 }

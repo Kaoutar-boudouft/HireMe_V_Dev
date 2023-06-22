@@ -2,6 +2,7 @@ package com.example.hireme.Controller;
 
 import com.example.hireme.Model.Entity.City;
 import com.example.hireme.Service.CityService;
+import com.fasterxml.jackson.core.JsonEncoding;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,6 @@ public class ApiController {
 
     @GetMapping("/active_cities/{country_id}")
     public List<City> getActiveCitiesByCountry(@PathVariable("country_id") Long country_id){
-        return cityService.getActiveCitiesByCountry(country_id);
+            return cityService.getActiveCitiesByCountry(country_id);
     }
 }

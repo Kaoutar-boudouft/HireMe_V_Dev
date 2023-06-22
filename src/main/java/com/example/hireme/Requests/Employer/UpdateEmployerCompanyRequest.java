@@ -53,4 +53,6 @@ public class UpdateEmployerCompanyRequest {
     @NotNull
     MultipartFile file;
 
+    Boolean active;
+
 }

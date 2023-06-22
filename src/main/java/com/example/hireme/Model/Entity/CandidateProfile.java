@@ -28,7 +28,7 @@ public class CandidateProfile extends Profile {
     private String motivation_letter;
     private String experience;
 
-    @ManyToMany(fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY )
     @JoinTable(name = "candidatures", joinColumns = @JoinColumn(name = "candidate_profile_id"), inverseJoinColumns = @JoinColumn(name = "offer_id"))
     private List<JobOffer> job_offers;
 

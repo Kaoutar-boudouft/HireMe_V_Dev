@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -20,6 +21,20 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CityRepository cityRepository;
     private final EmployerProfileRepository employerProfileRepository;
+    public List<Company> getAll(){
+        return companyRepository.findAll();
+    }
+
+    public List<Company> getCompaniesToValidate(){
+        return companyRepository.findByActive(false);
+    }
+
+    public Optional<Company> findById(Long company_id){
+        return companyRepository.findById(company_id);
+    }
+    public Company getById(Long company_id){
+        return companyRepository.getReferenceById(company_id);
+    }
 
     public Company createNewCompany(EmployerRegisterRequest employerRegisterRequest) {
         Company company = new Company();
@@ -41,7 +56,7 @@ public class CompanyService {
                     employerProfile.getCompany().getPhone_number(), employerProfile.getCompany().getEmail(),
                     employerProfile.getCompany().getWebsite(),employerProfile.getCompany().getAddress(),
                     employerProfile.getCompany().getCity().getId(),
-                    employerProfile.getCompany().getCity().getCountry().getId(),null);
+                    employerProfile.getCompany().getCity().getCountry().getId(),null,employerProfile.getCompany().getActive());
     }
 
     public Company updateEmployerCompany(UpdateEmployerCompanyRequest updateEmployerCompanyRequest,Long user_id){
@@ -52,6 +67,10 @@ public class CompanyService {
         company.setEmail(updateEmployerCompanyRequest.getCompany_email());
         company.setPhone_number(updateEmployerCompanyRequest.getCompany_phone_number());
         company.setCity(cityRepository.getReferenceById(updateEmployerCompanyRequest.getCompany_city()));
+        System.out.println("kaoutar"+updateEmployerCompanyRequest.getActive());
+        if (updateEmployerCompanyRequest.getActive()!=null){
+            company.setActive(updateEmployerCompanyRequest.getActive());
+        }
         return companyRepository.save(company);
     }
 
@@ -59,5 +78,8 @@ public class CompanyService {
         return companyRepository.findTopByJobOffersCount();
     }
 
+    /*public void removeCompany(Company company){
+        userService.removeUser(company.getEmployerProfile().getUser());
+    }*/
 
 }

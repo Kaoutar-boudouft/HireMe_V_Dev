@@ -136,17 +136,17 @@ public class UserService  implements UserDetailsService{
         if (verificationToken.isPresent()){
             verificationTokenRepository.deleteByUserId(user.getId());
         }
-        if (user.getRole().equals(Role.CANDIDATE.name())){
+        if (user.getRole().equals(Role.CANDIDATE)){
             CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(user.getId());
             candidateProfileRepository.delete(candidateProfile);
         }
-        else if (user.getRole().equals(Role.EMPLOYER.name())) {
+        else if (user.getRole().equals(Role.EMPLOYER)) {
             EmployerProfile employerProfile = employerProfileService.getEmployerProfile(user.getId());
             Company company = employerProfile.getCompany();
-            companyRepository.delete(company);
             employerProfileRepository.delete(employerProfile);
+            companyRepository.delete(company);
         }
-        else if (user.getRole().equals(Role.ADMIN.name())) {
+        else if (user.getRole().equals(Role.ADMIN)) {
             AdminProfile adminProfile = adminProfileService.getAdminProfile(user.getId());
             adminProfileRepository.delete(adminProfile);
         }

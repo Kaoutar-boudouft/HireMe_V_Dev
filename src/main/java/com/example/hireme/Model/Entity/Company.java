@@ -34,7 +34,7 @@ public class Company {
 
     private LocalDateTime created_at;
 
-    @OneToOne(mappedBy = "company" ,cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "company")
     @PrimaryKeyJoinColumn
     private EmployerProfile employerProfile;
 
