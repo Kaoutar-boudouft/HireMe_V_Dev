@@ -34,6 +34,7 @@ public class UserService  implements UserDetailsService{
     private final CompanyService companyService;
     private final PasswordEncoder passwordEncoder;
     private final VerificationTokenRepository verificationTokenRepository;
+    private final JobOfferRepository jobOfferRepository;
 
     public List<User> getUsers(){
         return userRepository.findAll();
@@ -132,17 +133,15 @@ public class UserService  implements UserDetailsService{
     }
 
     public void removeUser(User user){
-        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByUserId(user.getId());
-        if (verificationToken.isPresent()){
-            verificationTokenRepository.deleteByUserId(user.getId());
-        }
         if (user.getRole().equals(Role.CANDIDATE)){
             CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(user.getId());
+            jobOfferRepository.deleteCandidaturesByCandidate(candidateProfile.getId());
             candidateProfileRepository.delete(candidateProfile);
         }
         else if (user.getRole().equals(Role.EMPLOYER)) {
             EmployerProfile employerProfile = employerProfileService.getEmployerProfile(user.getId());
             Company company = employerProfile.getCompany();
+            jobOfferRepository.deleteJobsByCompany(company.getId());
             employerProfileRepository.delete(employerProfile);
             companyRepository.delete(company);
         }
@@ -151,5 +150,6 @@ public class UserService  implements UserDetailsService{
             adminProfileRepository.delete(adminProfile);
         }
         userRepository.delete(user);
+
     }
 }

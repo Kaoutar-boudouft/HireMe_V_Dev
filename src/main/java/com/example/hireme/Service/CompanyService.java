@@ -25,9 +25,10 @@ public class CompanyService {
         return companyRepository.findAll();
     }
 
-    public List<Company> getCompaniesToValidate(){
-        return companyRepository.findByActive(false);
+    public List<Company> getCompaniesByActive(Boolean active){
+        return companyRepository.findByActive(active);
     }
+
 
     public Optional<Company> findById(Long company_id){
         return companyRepository.findById(company_id);

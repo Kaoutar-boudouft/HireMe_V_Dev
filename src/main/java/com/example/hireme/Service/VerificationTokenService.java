@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,5 +41,13 @@ public class VerificationTokenService {
         else {
             return "invalid token !";
         }
+    }
+
+    public Optional<VerificationToken> findByUserId(Long user_id){
+        return  verificationTokenRepository.findByUserId(user_id);
+    }
+
+    public void remove(VerificationToken verificationToken){
+        verificationTokenRepository.delete(verificationToken);
     }
 }

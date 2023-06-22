@@ -22,6 +22,9 @@ public class JobOfferService {
     private final OfferCategoryRepository offerCategoryRepository;
     private final EmployerProfileRepository employerProfileRepository;
 
+    public List<JobOffer> getAll(){
+        return jobOfferRepository.findAll();
+    }
     public JobOffer create(CreateUpdateJobRequest createUpdateJobRequest, Long company_id){
         JobOffer jobOffer = new JobOffer();
         jobOffer.setActive(false);
@@ -71,7 +74,7 @@ public class JobOfferService {
         return new CreateUpdateJobRequest(
                 job_id,jobOffer.getTitle(),jobOffer.getCategory().getId(),jobOffer.getType().name(),
                 jobOffer.getCity().getCountry().getId(),jobOffer.getCity().getId(),jobOffer.getSalary(),
-                jobOffer.getCurrency().name(),jobOffer.getDescription()
+                jobOffer.getCurrency().name(),jobOffer.getDescription(),jobOffer.getActive(),jobOffer.getCompany().getId()
         );
     }
 
@@ -84,6 +87,11 @@ public class JobOfferService {
         jobOffer.setCity(cityRepository.getReferenceById(createUpdateJobRequest.getCity_id()));
         jobOffer.setCategory(offerCategoryRepository.getReferenceById(createUpdateJobRequest.getCategory_id()));
         jobOffer.setCurrency(Currency.valueOf(createUpdateJobRequest.getCurrency()));
+        System.out.println("kaoutar"+createUpdateJobRequest.getActive());
+        if (createUpdateJobRequest.getActive()!=null){
+            System.out.println("kaoutar not null");
+            jobOffer.setActive(createUpdateJobRequest.getActive());
+        }
         return jobOfferRepository.save(jobOffer);
     }
 
@@ -111,6 +119,11 @@ public class JobOfferService {
             category = "%%";
         }
         return jobOfferRepository.findByTitleAndCategoryAndLocation(title,location,category);
+    }
+
+    public void removeJob(JobOffer jobOffer){
+        jobOfferRepository.deleteCandidaturesByJob(jobOffer.getId());
+        jobOfferRepository.delete(jobOffer);
     }
 
 

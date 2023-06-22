@@ -41,6 +41,7 @@ public class User implements UserDetails {
     @PrimaryKeyJoinColumn
     private Profile profile;
 
+
     public User(String email, String password, LocalDateTime email_verified_at, Role role, Boolean active, LocalDateTime created_at, Profile profile) {
         this.email = email;
         this.password = password;

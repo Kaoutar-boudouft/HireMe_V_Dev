@@ -2,7 +2,9 @@ package com.example.hireme.Repository;
 
 import com.example.hireme.Model.Entity.CandidateProfile;
 import com.example.hireme.Model.Entity.JobOffer;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -30,6 +32,20 @@ public interface JobOfferRepository extends JpaRepository<JobOffer,Long> {
     @Query(value = "select * from jobs_offers jobs where jobs.id in(select offer_id from candidatures where candidate_profile_id=?1) limit ?2,?3", nativeQuery = true)
     List<JobOffer> findCandidateCandidaturesWithPagination(Long candidate_profile_id,long start,long end);
 
+    @Modifying
+    @Transactional
+    @Query(value = "delete from candidatures where candidatures.offer_id=?1", nativeQuery = true)
+    void deleteCandidaturesByJob(Long job_id);
+
+    @Modifying
+    @Transactional
+    @Query(value = "delete from candidatures where candidatures.candidate_profile_id=?1", nativeQuery = true)
+    void deleteCandidaturesByCandidate(Long candidate_id);
+
+    @Modifying
+    @Transactional
+    @Query(value = "delete from jobs_offers where jobs_offers.company_id=?1", nativeQuery = true)
+    void deleteJobsByCompany(Long company_id);
 
 
 

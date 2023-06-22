@@ -36,6 +36,7 @@ public class CompanyManagementController {
     private final CityService cityService;
     private final MediaService mediaService;
     private final UserService userService;
+    private final VerificationTokenService verificationTokenService;
    // private final EmployerProfileService employerProfileService;
     private final FileUploadService fileUploadService;
     private final LanguageConfig languageConfig;
@@ -48,7 +49,7 @@ public class CompanyManagementController {
             model.addAttribute("companies",companies);
         }
         else if (type.equals("to_validate")){
-            List<Company> companies = companyService.getCompaniesToValidate();
+            List<Company> companies = companyService.getCompaniesByActive(false);
             model.addAttribute("companies",companies);
         }
         else {
@@ -124,6 +125,10 @@ public class CompanyManagementController {
                                 RedirectAttributes redirectAttributes,Locale locale,Model model){
         Optional<Company> company = companyService.findById(company_id);
         if (company.isPresent()){
+            Optional<VerificationToken> verificationToken = verificationTokenService.findByUserId(company.get().getEmployerProfile().getUser().getId());
+            if (verificationToken.isPresent()){
+                verificationTokenService.remove(verificationToken.get());
+            }
             userService.removeUser(company.get().getEmployerProfile().getUser());
             redirectAttributes.addAttribute("successMessage",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
         }

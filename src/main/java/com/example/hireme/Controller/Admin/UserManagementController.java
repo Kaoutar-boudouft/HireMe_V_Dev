@@ -1,15 +1,12 @@
 package com.example.hireme.Controller.Admin;
 
-import com.example.hireme.Events.Listener.RegisterSuccessEventListener;
 import com.example.hireme.Events.RegistrationSuccessEvent;
 import com.example.hireme.Exceptions.UserAlreadyExistException;
 import com.example.hireme.Model.Entity.*;
-import com.example.hireme.Model.Profile;
 import com.example.hireme.Model.Role;
 import com.example.hireme.MultiLanguages.LanguageConfig;
 import com.example.hireme.Requests.Admin.CreateAdminRequest;
 import com.example.hireme.Requests.Admin.UpdateAdminProfileRequest;
-import com.example.hireme.Requests.Candidate.CandidateRegisterRequest;
 import com.example.hireme.Requests.Candidate.UpdateCandidateProfileRequest;
 import com.example.hireme.Requests.EmailUpdateRequest;
 import com.example.hireme.Requests.Employer.UpdateEmployerProfileRequest;
@@ -30,11 +27,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 @Controller
 @AllArgsConstructor
 @RequestMapping("/admin/users")
-public class UserController {
+public class UserManagementController {
 
     private final CandidateProfileService candidateProfileService;
     private final EmployerProfileService employerProfileService;
@@ -47,6 +45,7 @@ public class UserController {
     private final AppService appService;
     private final LanguageConfig languageConfig;
     private final FileUploadService fileUploadService;
+    private final VerificationTokenService verificationTokenService;
 
     @GetMapping("/{type}")
     public String getUsersPage(@PathVariable("type") String type, Authentication authentication, Model model){
@@ -444,6 +443,10 @@ public class UserController {
     public String deleteUser(@PathVariable("user_id") Long user_id,
                                 RedirectAttributes redirectAttributes,Locale locale,Model model){
         String role = userService.getById(user_id).getRole().name().toLowerCase();
+        Optional<VerificationToken> verificationToken = verificationTokenService.findByUserId(user_id);
+        if (verificationToken.isPresent()){
+            verificationTokenService.remove(verificationToken.get());
+        }
         userService.removeUser(userService.getById(user_id));
         model.addAttribute("successMessage",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
         return "redirect:/admin/users/"+role;

@@ -41,6 +41,10 @@ public class CreateUpdateJobRequest {
     @NotEmpty()
     String job_description;
 
+    Boolean active;
+
+    Long company_id;
+
     public CreateUpdateJobRequest(String title, Long category_id, String type, Long country_id, Long city_id, Double salary, String currency, String job_description) {
         this.title = title;
         this.category_id = category_id;

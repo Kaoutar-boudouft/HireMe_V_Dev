@@ -182,7 +182,6 @@ public class JobController {
         List<City> cities = cityService.getActiveCitiesByCountry(createUpdateJobRequest.getCountry_id());
         List<OfferCategory> categories = offerCategoryService.getAllCategories();
         JobType[] types = JobType.values();
-        List<JobType> jobTypes = Arrays.asList(types);
         Currency[] currencies = Currency.values();
         model.addAttribute("user", user);
         model.addAttribute("createUpdateJobRequest", createUpdateJobRequest);
