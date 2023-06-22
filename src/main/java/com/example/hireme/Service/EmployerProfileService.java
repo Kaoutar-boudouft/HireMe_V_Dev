@@ -50,7 +50,7 @@ public class EmployerProfileService {
     public UpdateEmployerProfileRequest prepareUpdateEmployerRequest(EmployerProfile employerProfile){
         return new UpdateEmployerProfileRequest(
                 employerProfile.getFirst_name(),employerProfile.getLast_name(),employerProfile.getBirth_date(),
-                employerProfile.getMobile_number(),employerProfile.getId_number());
+                employerProfile.getMobile_number(),employerProfile.getId_number(),employerProfile.getUser().getActive());
     }
 
     public EmployerProfile updateEmployerProfile(UpdateEmployerProfileRequest updateEmployerProfileRequest,Long user_id){
@@ -60,6 +60,9 @@ public class EmployerProfileService {
         employerProfile.setBirth_date(updateEmployerProfileRequest.getBirth_date());
         employerProfile.setMobile_number(updateEmployerProfileRequest.getMobile());
         employerProfile.setId_number(updateEmployerProfileRequest.getId_number());
+        if (updateEmployerProfileRequest.getActive()!=null){
+            employerProfile.getUser().setActive(updateEmployerProfileRequest.getActive());
+        }
         return employerProfileRepository.save(employerProfile);
     }
 

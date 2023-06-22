@@ -36,5 +36,7 @@ public class UpdateEmployerProfileRequest {
     @Size(min = 5,max = 10)
     String id_number;
 
+    Boolean active;
+
 
 }
