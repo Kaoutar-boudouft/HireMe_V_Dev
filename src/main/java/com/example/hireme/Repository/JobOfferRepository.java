@@ -47,6 +47,16 @@ public interface JobOfferRepository extends JpaRepository<JobOffer,Long> {
     @Query(value = "delete from jobs_offers where jobs_offers.company_id=?1", nativeQuery = true)
     void deleteJobsByCompany(Long company_id);
 
+    @Modifying
+    @Transactional
+    @Query(value = "insert into blogs_tags(tag_id,blog_id) VALUES(?2,?1)", nativeQuery = true)
+    void linkBlogWithTag(Long blog_id,Long tag_id);
+
+    @Modifying
+    @Transactional
+    @Query(value = "delete from blogs_tags where blog_id=?1", nativeQuery = true)
+    void removeLinkbetweenBlogAndTag(Long blog_id);
+
 
 
 

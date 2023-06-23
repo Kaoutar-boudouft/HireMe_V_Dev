@@ -35,6 +35,7 @@ public class UserService  implements UserDetailsService{
     private final PasswordEncoder passwordEncoder;
     private final VerificationTokenRepository verificationTokenRepository;
     private final JobOfferRepository jobOfferRepository;
+    private final MediaService mediaService;
 
     public List<User> getUsers(){
         return userRepository.findAll();
@@ -134,6 +135,7 @@ public class UserService  implements UserDetailsService{
 
     public void removeUser(User user){
         if (user.getRole().equals(Role.CANDIDATE)){
+            mediaService.deleteMedia(new Media("Candidate",user.getProfile().getId(),"cv"));
             CandidateProfile candidateProfile = candidateProfileService.getCandidateProfile(user.getId());
             jobOfferRepository.deleteCandidaturesByCandidate(candidateProfile.getId());
             candidateProfileRepository.delete(candidateProfile);

@@ -125,6 +125,7 @@ public class CompanyManagementController {
                                 RedirectAttributes redirectAttributes,Locale locale,Model model){
         Optional<Company> company = companyService.findById(company_id);
         if (company.isPresent()){
+            mediaService.deleteMedia(new Media("Company",company.get().getId(),"company_logo"));
             Optional<VerificationToken> verificationToken = verificationTokenService.findByUserId(company.get().getEmployerProfile().getUser().getId());
             if (verificationToken.isPresent()){
                 verificationTokenService.remove(verificationToken.get());
