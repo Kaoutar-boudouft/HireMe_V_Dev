@@ -31,16 +31,11 @@ import java.util.Optional;
 @AllArgsConstructor
 @RequestMapping("/admin/blogs")
 public class BlogManagementController {
-
-    private final JobOfferService jobOfferService;
     private final BlogTagService blogTagService;
     private final BlogService blogService;
     private final MediaService mediaService;
-    private final JobOfferRepository jobOfferRepository;
     private final LanguageConfig languageConfig;
-    private final BlogTagRepository blogTagRepository;
     private final FileUploadService fileUploadService;
-    private final EmployerProfileService employerProfileService;
 
     @GetMapping()
     public String getBlogsPage(Authentication authentication, Model model){
@@ -59,13 +54,7 @@ public class BlogManagementController {
         List<BlogTag> tags = blogTagService.getAll();
         if (blog.isPresent()){
             CreateUpdateBlogRequest createUpdateBlogRequest = blogService.prepareCreateUpdateBlogRequest(blog.get());
-            Media media = mediaService.getMedia("Blog",blog_id,"blog");
-            model.addAttribute("user",user);
-            model.addAttribute("createUpdateBlogRequest",createUpdateBlogRequest);
-            model.addAttribute("type","dashboard");
-            model.addAttribute("media",media);
-            model.addAttribute("blog_id",blog_id);
-            model.addAttribute("tags",tags);
+            model = getCommAttr(model,tags,blog_id,user,createUpdateBlogRequest);
             return "Admin/update_create_blog";
         }
         return "redirect:/admin/blogs";
@@ -76,12 +65,7 @@ public class BlogManagementController {
         User user = (User) authentication.getPrincipal();
             CreateUpdateBlogRequest createUpdateBlogRequest = new CreateUpdateBlogRequest();
        List<BlogTag> tags = blogTagService.getAll();
-       model.addAttribute("user",user);
-            model.addAttribute("createUpdateBlogRequest",createUpdateBlogRequest);
-            model.addAttribute("type","dashboard");
-            model.addAttribute("media",null);
-            model.addAttribute("blog_id",null);
-            model.addAttribute("tags",tags);
+       model = getCommAttr(model,tags,null,user,createUpdateBlogRequest);
        return "Admin/update_create_blog";
     }
 
@@ -90,11 +74,7 @@ public class BlogManagementController {
                             BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model) {
         User user = (User) authentication.getPrincipal();
         List<BlogTag> tags = blogTagService.getAll();
-        model.addAttribute("media",null);
-        model.addAttribute("user",user);
-        model.addAttribute("type","dashboard");
-        model.addAttribute("blog_id",null);
-        model.addAttribute("tags",tags);
+        model = getCommAttr(model,tags,null,user,createUpdateBlogRequest);
         if (bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("error", bindingResult);
             redirectAttributes.addFlashAttribute("createUpdateBlogRequest", createUpdateBlogRequest);
@@ -111,8 +91,7 @@ public class BlogManagementController {
             }
             fileUploadService.uploadFile(createUpdateBlogRequest.getFile(), media, locale);
             for (int i=0;i<createUpdateBlogRequest.getTags_id().size();i++){
-                System.out.println("kaoutar"+createUpdateBlogRequest.getTags_id().get(i));
-                jobOfferRepository.linkBlogWithTag(blog.getId(),createUpdateBlogRequest.getTags_id().get(i));
+                blogService.linkBlogWithTags(blog.getId(),createUpdateBlogRequest.getTags_id().get(i));
             }
         } catch (IOException e) {
             model.addAttribute("file_error", e.getMessage());
@@ -131,11 +110,7 @@ public class BlogManagementController {
         Optional<Blog> blog = blogService.findById(blog_id);
         if (blog.isPresent()){
             List<BlogTag> tags = blogTagService.getAll();
-            model.addAttribute("media",null);
-            model.addAttribute("user",user);
-            model.addAttribute("type","dashboard");
-            model.addAttribute("blog_id",blog_id);
-            model.addAttribute("tags",tags);
+            model = getCommAttr(model,tags,blog_id,user,createUpdateBlogRequest);
                 if (bindingResult.hasErrors()){
                     redirectAttributes.addFlashAttribute("error", bindingResult);
                     redirectAttributes.addFlashAttribute("createUpdateBlogRequest", createUpdateBlogRequest);
@@ -176,6 +151,17 @@ public class BlogManagementController {
             redirectAttributes.addFlashAttribute("successMessage",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
         }
         return "redirect:/admin/blogs";
+    }
+
+    public Model getCommAttr(Model model,List<BlogTag> tags,Long blog_id,User user,CreateUpdateBlogRequest createUpdateBlogRequest){
+        Media media = mediaService.getMedia("Blog",blog_id,"blog");
+        model.addAttribute("user",user);
+        model.addAttribute("createUpdateBlogRequest",createUpdateBlogRequest);
+        model.addAttribute("type","dashboard");
+        model.addAttribute("media",media);
+        model.addAttribute("blog_id",blog_id);
+        model.addAttribute("tags",tags);
+        return model;
     }
 
 

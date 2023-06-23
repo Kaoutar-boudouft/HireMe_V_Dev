@@ -37,7 +37,6 @@ public class CompanyManagementController {
     private final MediaService mediaService;
     private final UserService userService;
     private final VerificationTokenService verificationTokenService;
-   // private final EmployerProfileService employerProfileService;
     private final FileUploadService fileUploadService;
     private final LanguageConfig languageConfig;
 

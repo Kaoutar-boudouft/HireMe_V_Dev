@@ -36,11 +36,10 @@ public class JobManagementController {
     private final CompanyService companyService;
     private final OfferCategoryService offerCategoryService;
     private final LanguageConfig languageConfig;
-    private final VerificationTokenService verificationTokenService;
-    private final EmployerProfileService employerProfileService;
+
 
     @GetMapping()
-    public String getCompaniesPage(Authentication authentication, Model model){
+    public String getJobsPage(Authentication authentication, Model model){
         User user = (User) authentication.getPrincipal();
         List<JobOffer> jobOffers = jobOfferService.getAll();
         model.addAttribute("user",user);
@@ -50,51 +49,24 @@ public class JobManagementController {
     }
 
     @GetMapping("/{job_id}/edit")
-    public String getCompanyUpdatePage(@PathVariable("job_id") Long job_id, Authentication authentication, Model model){
+    public String getJobUpdatePage(@PathVariable("job_id") Long job_id, Authentication authentication, Model model){
         User user = (User) authentication.getPrincipal();
         JobOffer jobOffer = jobOfferService.getJobById(job_id);
         if (jobOffer!=null){
             CreateUpdateJobRequest createUpdateJobRequest = jobOfferService.prepareUpdateJobRequest(job_id);
-            List<Country> countries = countryService.getActiveCountries();
             List<City> cities = cityService.getActiveCitiesByCountry(jobOffer.getCity().getCountry().getId());
-            JobType[] types = JobType.values();
-            Currency[] currencies = Currency.values();
-            List<Company> companies = companyService.getCompaniesByActive(true);
-            List<OfferCategory> categories = offerCategoryService.getAllCategories();
-            model.addAttribute("user",user);
-            model.addAttribute("createUpdateJobRequest",createUpdateJobRequest);
-            model.addAttribute("type","dashboard");
-            model.addAttribute("countries",countries);
-            model.addAttribute("cities",cities);
-            model.addAttribute("types",types);
-            model.addAttribute("currencies",currencies);
-            model.addAttribute("companies",companies);
-            model.addAttribute("categories",categories);
+            model = getCommAttr(model,cities,user,createUpdateJobRequest,job_id);
             return "Admin/update_job";
         }
         return "redirect:/admin/jobs";
     }
 
     @GetMapping("/create")
-    public String getCompanyCreatePage(Authentication authentication, Model model){
+    public String getJobCreatePage(Authentication authentication, Model model){
         User user = (User) authentication.getPrincipal();
             CreateUpdateJobRequest createUpdateJobRequest = new CreateUpdateJobRequest();
-            List<Country> countries = countryService.getActiveCountries();
             List<City> cities = new ArrayList<>();
-            JobType[] types = JobType.values();
-            Currency[] currencies = Currency.values();
-            List<Company> companies = companyService.getCompaniesByActive(true);
-            List<OfferCategory> categories = offerCategoryService.getAllCategories();
-            model.addAttribute("user",user);
-            model.addAttribute("createUpdateJobRequest",createUpdateJobRequest);
-            model.addAttribute("type","dashboard");
-            model.addAttribute("countries",countries);
-            model.addAttribute("cities",cities);
-            model.addAttribute("types",types);
-            model.addAttribute("currencies",currencies);
-            model.addAttribute("companies",companies);
-            model.addAttribute("categories",categories);
-            model.addAttribute("job_id",null);
+            model = getCommAttr(model,cities,user,createUpdateJobRequest,null);
             return "Admin/update_job";
     }
 
@@ -102,21 +74,8 @@ public class JobManagementController {
     public String createJob(Authentication authentication , @Valid CreateUpdateJobRequest createUpdateJobRequest,
                             BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model) {
         User user = (User) authentication.getPrincipal();
-        List<Country> countries = countryService.getActiveCountries();
         List<City> cities = new ArrayList<>();
-        JobType[] types = JobType.values();
-        Currency[] currencies = Currency.values();
-        List<Company> companies = companyService.getCompaniesByActive(true);
-        List<OfferCategory> categories = offerCategoryService.getAllCategories();
-        model.addAttribute("user",user);
-        model.addAttribute("type","dashboard");
-        model.addAttribute("countries",countries);
-        model.addAttribute("cities",cities);
-        model.addAttribute("types",types);
-        model.addAttribute("currencies",currencies);
-        model.addAttribute("companies",companies);
-        model.addAttribute("categories",categories);
-        model.addAttribute("job_id",null);
+        model = getCommAttr(model,cities,user,createUpdateJobRequest,null);
         if (bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("error", bindingResult);
             redirectAttributes.addFlashAttribute("createUpdateJobRequest", createUpdateJobRequest);
@@ -134,21 +93,8 @@ public class JobManagementController {
         User user = (User) authentication.getPrincipal();
         JobOffer checkJobExistance = jobOfferService.getJobById(job_id);
         if (checkJobExistance!=null){
-            List<Country> countries = countryService.getActiveCountries();
             List<City> cities = cityService.getActiveCitiesByCountry(jobOfferService.getJobById(job_id).getCity().getCountry().getId());
-            JobType[] types = JobType.values();
-            Currency[] currencies = Currency.values();
-            List<Company> companies = companyService.getCompaniesByActive(true);
-            List<OfferCategory> categories = offerCategoryService.getAllCategories();
-            model.addAttribute("user",user);
-            model.addAttribute("createUpdateJobRequest",createUpdateJobRequest);
-            model.addAttribute("type","dashboard");
-            model.addAttribute("countries",countries);
-            model.addAttribute("cities",cities);
-            model.addAttribute("types",types);
-            model.addAttribute("currencies",currencies);
-            model.addAttribute("companies",companies);
-            model.addAttribute("categories",categories);
+            model = getCommAttr(model,cities,user,createUpdateJobRequest,job_id);
                 if (bindingResult.hasErrors()){
                     redirectAttributes.addFlashAttribute("error", bindingResult);
                     redirectAttributes.addFlashAttribute("createUpdateJobRequest", createUpdateJobRequest);
@@ -164,8 +110,27 @@ public class JobManagementController {
         }
     }
 
+    public Model getCommAttr(Model model,List<City> cities,User user,CreateUpdateJobRequest createUpdateJobRequest,Long job_id){
+        List<Country> countries = countryService.getActiveCountries();
+        JobType[] types = JobType.values();
+        Currency[] currencies = Currency.values();
+        List<Company> companies = companyService.getCompaniesByActive(true);
+        List<OfferCategory> categories = offerCategoryService.getAllCategories();
+        model.addAttribute("user",user);
+        model.addAttribute("createUpdateJobRequest",createUpdateJobRequest);
+        model.addAttribute("type","dashboard");
+        model.addAttribute("countries",countries);
+        model.addAttribute("cities",cities);
+        model.addAttribute("types",types);
+        model.addAttribute("currencies",currencies);
+        model.addAttribute("companies",companies);
+        model.addAttribute("categories",categories);
+        model.addAttribute("job_id",job_id);
+        return model;
+    }
+
     @GetMapping("/delete/{job_id}")
-    public String deleteCompany(@PathVariable("job_id") Long job_id,
+    public String deleteJob(@PathVariable("job_id") Long job_id,
                                 RedirectAttributes redirectAttributes,Locale locale,Model model){
         JobOffer jobOffer = jobOfferService.getJobById(job_id);
         if (jobOffer!=null){

@@ -54,9 +54,7 @@ public class CategoryManagementController {
         Optional<OfferCategory> offerCategory = offerCategoryService.findById(job_id);
         if (offerCategory.isPresent()){
             CreateUpdateCategoryRequest createUpdateCategoryRequest = new CreateUpdateCategoryRequest(offerCategory.get().getLabel());
-            model.addAttribute("user",user);
-            model.addAttribute("createUpdateCategoryRequest",createUpdateCategoryRequest);
-            model.addAttribute("type","dashboard");
+            model = getCommAttr(model,user,createUpdateCategoryRequest,null);
             return "Admin/update_create_category";
         }
         return "redirect:/admin/categories";
@@ -66,10 +64,7 @@ public class CategoryManagementController {
     public String getCategoryCreatePage(Authentication authentication, Model model){
         User user = (User) authentication.getPrincipal();
             CreateUpdateCategoryRequest createUpdateCategoryRequest = new CreateUpdateCategoryRequest();
-            model.addAttribute("user",user);
-            model.addAttribute("createUpdateCategoryRequest",createUpdateCategoryRequest);
-            model.addAttribute("type","dashboard");
-            model.addAttribute("category_id",null);
+            model = getCommAttr(model,user,createUpdateCategoryRequest,null);
             return "Admin/update_create_category";
     }
 
@@ -77,9 +72,7 @@ public class CategoryManagementController {
     public String createCategory(Authentication authentication , @Valid CreateUpdateCategoryRequest createUpdateCategoryRequest,
                             BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model) {
         User user = (User) authentication.getPrincipal();
-        model.addAttribute("user",user);
-        model.addAttribute("type","dashboard");
-        model.addAttribute("job_id",null);
+        model = getCommAttr(model,user,createUpdateCategoryRequest,null);
         if (bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("error", bindingResult);
             redirectAttributes.addFlashAttribute("createUpdateCategoryRequest", createUpdateCategoryRequest);
@@ -104,9 +97,7 @@ public class CategoryManagementController {
         User user = (User) authentication.getPrincipal();
         Optional<OfferCategory> offerCategory = offerCategoryService.findById(category_id);
         if (offerCategory.isPresent()){
-            model.addAttribute("user",user);
-            model.addAttribute("createUpdateCategoryRequest",createUpdateCategoryRequest);
-            model.addAttribute("type","dashboard");
+            model = getCommAttr(model,user,createUpdateCategoryRequest,category_id);
                 if (bindingResult.hasErrors()){
                     redirectAttributes.addFlashAttribute("error", bindingResult);
                     redirectAttributes.addFlashAttribute("createUpdateCategoryRequest", createUpdateCategoryRequest);
@@ -129,8 +120,16 @@ public class CategoryManagementController {
         }
     }
 
+    public Model getCommAttr(Model model,User user,CreateUpdateCategoryRequest createUpdateCategoryRequest,Long category_id){
+        model.addAttribute("user",user);
+        model.addAttribute("createUpdateCategoryRequest",createUpdateCategoryRequest);
+        model.addAttribute("type","dashboard");
+        model.addAttribute("category_id",category_id);
+        return model;
+    }
+
     @GetMapping("/delete/{category_id}")
-    public String deleteCompany(@PathVariable("category_id") Long category_id,
+    public String deleteCategory(@PathVariable("category_id") Long category_id,
                                 RedirectAttributes redirectAttributes,Locale locale,Model model){
         Optional<OfferCategory> offerCategory = offerCategoryService.findById(category_id);
         if (offerCategory.isPresent()){

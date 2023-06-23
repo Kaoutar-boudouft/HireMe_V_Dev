@@ -21,6 +21,7 @@ public class JobOfferService {
     private final CityRepository cityRepository;
     private final OfferCategoryRepository offerCategoryRepository;
     private final EmployerProfileRepository employerProfileRepository;
+    private final GlobalRepository globalRepository;
 
     public List<JobOffer> getAll(){
         return jobOfferRepository.findAll();
@@ -122,7 +123,7 @@ public class JobOfferService {
     }
 
     public void removeJob(JobOffer jobOffer){
-        jobOfferRepository.deleteCandidaturesByJob(jobOffer.getId());
+        globalRepository.deleteCandidaturesByJob(jobOffer.getId());
         jobOfferRepository.delete(jobOffer);
     }
 

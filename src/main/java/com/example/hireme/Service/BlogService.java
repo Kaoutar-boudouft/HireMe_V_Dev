@@ -4,6 +4,7 @@ import com.example.hireme.Model.Entity.Blog;
 import com.example.hireme.Model.Entity.BlogTag;
 import com.example.hireme.Model.Language;
 import com.example.hireme.Repository.BlogRepository;
+import com.example.hireme.Repository.GlobalRepository;
 import com.example.hireme.Repository.JobOfferRepository;
 import com.example.hireme.Requests.Admin.CreateUpdateBlogRequest;
 import com.example.hireme.Requests.Admin.CreateUpdateTagRequest;
@@ -18,7 +19,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class BlogService {
     private final BlogRepository blogRepository;
-    private final JobOfferRepository jobOfferRepository;
+    private final GlobalRepository globalRepository;
 
     public List<Blog> getAll(){
         return blogRepository.findAll();
@@ -43,7 +44,6 @@ public class BlogService {
         blog.setTitle(createUpdateBlogRequest.getTitle());
         blog.setContent(createUpdateBlogRequest.getContent());
         blog.setLanguage(Language.valueOf(createUpdateBlogRequest.getLanguage()));
-//        blog.setTags(createUpdateBlogRequest.getTags_id());
         return blogRepository.save(blog);
     }
 
@@ -54,13 +54,17 @@ public class BlogService {
         blog.setLanguage(Language.valueOf(createUpdateBlogRequest.getLanguage()));
         removeLinkbetweenBlogAndTag(blog);
         for (int i=0;i<createUpdateBlogRequest.getTags_id().size();i++){
-            jobOfferRepository.linkBlogWithTag(blog.getId(),createUpdateBlogRequest.getTags_id().get(i));
+            globalRepository.linkBlogWithTag(blog.getId(),createUpdateBlogRequest.getTags_id().get(i));
         }
         return blogRepository.save(blog);
     }
 
+    public void linkBlogWithTags(Long blog_id,Long tag_id){
+        globalRepository.linkBlogWithTag(blog_id,tag_id);
+    }
+
     public void removeLinkbetweenBlogAndTag(Blog blog){
-        jobOfferRepository.removeLinkbetweenBlogAndTag(blog.getId());
+        globalRepository.removeLinkbetweenBlogAndTag(blog.getId());
     }
 
     public void remove(Blog blog){

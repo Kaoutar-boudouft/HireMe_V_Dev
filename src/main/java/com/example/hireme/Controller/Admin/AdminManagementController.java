@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @AllArgsConstructor
 @RequestMapping("/admin")
-public class AdminController {
+public class AdminManagementController {
     @GetMapping("/dashboard")
     public String getCandidateProfile(Authentication authentication, Model model){
         User user = (User) authentication.getPrincipal();

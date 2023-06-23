@@ -27,16 +27,8 @@ import java.util.Optional;
 @AllArgsConstructor
 @RequestMapping("/admin/tags")
 public class TagManagementController {
-
-    private final JobOfferService jobOfferService;
     private final BlogTagService blogTagService;
-    private final CityService cityService;
-    private final CompanyService companyService;
-    private final OfferCategoryService offerCategoryService;
     private final LanguageConfig languageConfig;
-    private final BlogTagRepository blogTagRepository;
-    private final VerificationTokenService verificationTokenService;
-    private final EmployerProfileService employerProfileService;
 
     @GetMapping()
     public String getTagsPage(Authentication authentication, Model model){
@@ -49,14 +41,12 @@ public class TagManagementController {
     }
 
     @GetMapping("/{tag_id}/edit")
-    public String getTagsUpdatePage(@PathVariable("tag_id") Long tag_id, Authentication authentication, Model model){
+    public String getTagUpdatePage(@PathVariable("tag_id") Long tag_id, Authentication authentication, Model model){
         User user = (User) authentication.getPrincipal();
         Optional<BlogTag> blogTag = blogTagService.findById(tag_id);
         if (blogTag.isPresent()){
             CreateUpdateTagRequest createUpdateTagRequest = new CreateUpdateTagRequest(blogTag.get().getLabel());
-            model.addAttribute("user",user);
-            model.addAttribute("createUpdateTagRequest",createUpdateTagRequest);
-            model.addAttribute("type","dashboard");
+            model = getCommAttr(model,user,createUpdateTagRequest,tag_id);
             return "Admin/update_create_tag";
         }
         return "redirect:/admin/tags";
@@ -66,10 +56,7 @@ public class TagManagementController {
     public String getTagCreatePage(Authentication authentication, Model model){
         User user = (User) authentication.getPrincipal();
             CreateUpdateTagRequest createUpdateTagRequest = new CreateUpdateTagRequest();
-            model.addAttribute("user",user);
-            model.addAttribute("createUpdateTagRequest",createUpdateTagRequest);
-            model.addAttribute("type","dashboard");
-            model.addAttribute("tag_id",null);
+           model = getCommAttr(model,user,createUpdateTagRequest,null);
             return "Admin/update_create_tag";
     }
 
@@ -77,9 +64,7 @@ public class TagManagementController {
     public String createTag(Authentication authentication , @Valid CreateUpdateTagRequest createUpdateTagRequest,
                             BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model) {
         User user = (User) authentication.getPrincipal();
-        model.addAttribute("user",user);
-        model.addAttribute("type","dashboard");
-        model.addAttribute("tag_id",null);
+        model = getCommAttr(model,user,createUpdateTagRequest,null);
         if (bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("error", bindingResult);
             redirectAttributes.addFlashAttribute("createUpdateTagRequest", createUpdateTagRequest);
@@ -98,15 +83,13 @@ public class TagManagementController {
     }
 
     @PostMapping("/{tag_id}/update")
-    public String updateJob(Authentication authentication,@PathVariable("tag_id") Long tag_id,@Valid CreateUpdateTagRequest createUpdateTagRequest,
+    public String updateTag(Authentication authentication,@PathVariable("tag_id") Long tag_id,@Valid CreateUpdateTagRequest createUpdateTagRequest,
                             BindingResult bindingResult,RedirectAttributes redirectAttributes,Model model,
                             Locale locale){
         User user = (User) authentication.getPrincipal();
         Optional<BlogTag> blogTag = blogTagService.findById(tag_id);
         if (blogTag.isPresent()){
-            model.addAttribute("user",user);
-            model.addAttribute("createUpdateTagRequest",createUpdateTagRequest);
-            model.addAttribute("type","dashboard");
+            model = getCommAttr(model,user,createUpdateTagRequest,tag_id);
                 if (bindingResult.hasErrors()){
                     redirectAttributes.addFlashAttribute("error", bindingResult);
                     redirectAttributes.addFlashAttribute("createUpdateTagRequest", createUpdateTagRequest);
@@ -129,8 +112,16 @@ public class TagManagementController {
         }
     }
 
+    public Model getCommAttr(Model model,User user,CreateUpdateTagRequest createUpdateTagRequest,Long tag_id){
+        model.addAttribute("user",user);
+        model.addAttribute("createUpdateTagRequest",createUpdateTagRequest);
+        model.addAttribute("type","dashboard");
+        model.addAttribute("tag_id",tag_id);
+        return model;
+    }
+
     @GetMapping("/delete/{tag_id}")
-    public String deleteCompany(@PathVariable("tag_id") Long tag_id,
+    public String deleteTag(@PathVariable("tag_id") Long tag_id,
                                 RedirectAttributes redirectAttributes,Locale locale,Model model){
         Optional<BlogTag> blogTag = blogTagService.findById(tag_id);
         if (blogTag.isPresent()){
