@@ -3,7 +3,9 @@ package com.example.hireme.Repository;
 import com.example.hireme.Model.Entity.Company;
 import com.example.hireme.Model.Entity.JobOffer;
 import com.example.hireme.Model.Entity.User;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -18,5 +20,10 @@ public interface CompanyRepository extends JpaRepository<Company,Long> {
     List<Company> findTopByJobOffersCount();
 
     List<Company> findByActive(Boolean active);
+
+    @Modifying
+    @Transactional
+    @Query(value = "delete from jobs_offers where jobs_offers.company_id=?1", nativeQuery = true)
+    void deleteJobsByCompany(Long company_id);
 
 }

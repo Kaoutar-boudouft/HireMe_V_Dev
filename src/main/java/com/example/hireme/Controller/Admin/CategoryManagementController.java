@@ -49,12 +49,12 @@ public class CategoryManagementController {
     }
 
     @GetMapping("/{category_id}/edit")
-    public String getCategoryUpdatePage(@PathVariable("category_id") Long job_id, Authentication authentication, Model model){
+    public String getCategoryUpdatePage(@PathVariable("category_id") Long category_id, Authentication authentication, Model model){
         User user = (User) authentication.getPrincipal();
-        Optional<OfferCategory> offerCategory = offerCategoryService.findById(job_id);
+        Optional<OfferCategory> offerCategory = offerCategoryService.findById(category_id);
         if (offerCategory.isPresent()){
             CreateUpdateCategoryRequest createUpdateCategoryRequest = new CreateUpdateCategoryRequest(offerCategory.get().getLabel());
-            model = getCommAttr(model,user,createUpdateCategoryRequest,null);
+            model = getCommAttr(model,user,createUpdateCategoryRequest,category_id);
             return "Admin/update_create_category";
         }
         return "redirect:/admin/categories";

@@ -33,6 +33,10 @@ public interface JobOfferRepository extends JpaRepository<JobOffer,Long> {
     List<JobOffer> findCandidateCandidaturesWithPagination(Long candidate_profile_id,long start,long end);
 
 
+    @Modifying
+    @Transactional
+    @Query(value = "delete from candidatures where candidatures.offer_id=?1", nativeQuery = true)
+    void deleteCandidaturesByJob(Long job_id);
 
 
 

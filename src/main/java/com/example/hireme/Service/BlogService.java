@@ -1,13 +1,9 @@
 package com.example.hireme.Service;
 
 import com.example.hireme.Model.Entity.Blog;
-import com.example.hireme.Model.Entity.BlogTag;
 import com.example.hireme.Model.Language;
 import com.example.hireme.Repository.BlogRepository;
-import com.example.hireme.Repository.GlobalRepository;
-import com.example.hireme.Repository.JobOfferRepository;
 import com.example.hireme.Requests.Admin.CreateUpdateBlogRequest;
-import com.example.hireme.Requests.Admin.CreateUpdateTagRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +15,6 @@ import java.util.Optional;
 @AllArgsConstructor
 public class BlogService {
     private final BlogRepository blogRepository;
-    private final GlobalRepository globalRepository;
 
     public List<Blog> getAll(){
         return blogRepository.findAll();
@@ -54,17 +49,17 @@ public class BlogService {
         blog.setLanguage(Language.valueOf(createUpdateBlogRequest.getLanguage()));
         removeLinkbetweenBlogAndTag(blog);
         for (int i=0;i<createUpdateBlogRequest.getTags_id().size();i++){
-            globalRepository.linkBlogWithTag(blog.getId(),createUpdateBlogRequest.getTags_id().get(i));
+            blogRepository.linkBlogWithTag(blog.getId(),createUpdateBlogRequest.getTags_id().get(i));
         }
         return blogRepository.save(blog);
     }
 
     public void linkBlogWithTags(Long blog_id,Long tag_id){
-        globalRepository.linkBlogWithTag(blog_id,tag_id);
+        blogRepository.linkBlogWithTag(blog_id,tag_id);
     }
 
     public void removeLinkbetweenBlogAndTag(Blog blog){
-        globalRepository.removeLinkbetweenBlogAndTag(blog.getId());
+        blogRepository.removeLinkbetweenBlogAndTag(blog.getId());
     }
 
     public void remove(Blog blog){
