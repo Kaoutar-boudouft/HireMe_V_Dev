@@ -17,4 +17,8 @@ public class CityService {
         return cityRepository.findByActiveAndCountryId(1,country_id);
     }
 
+    public List<City> getCitiesByCountry(Long country_id){
+        return cityRepository.findByCountryId(country_id);
+    }
+
 }

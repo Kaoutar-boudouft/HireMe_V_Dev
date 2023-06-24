@@ -17,6 +17,9 @@ public class CountryService {
     public List<Country> getActiveCountries(){
         return countryRepository.findByActive(1);
     }
+    public List<Country> getAll(){
+        return countryRepository.findAll();
+    }
 
 
 }
