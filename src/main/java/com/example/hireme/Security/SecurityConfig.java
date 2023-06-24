@@ -20,7 +20,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests (
                         authorizeConfig -> {
                             authorizeConfig.requestMatchers("/static/**","/assets/**","/sass/**","/scss/**","/Fragments/**").permitAll();
-                            authorizeConfig.requestMatchers("/registration/**","/jobs/**").permitAll();
+                            authorizeConfig.requestMatchers("/registration/**","/jobs/**","/blogs/**").permitAll();
                             authorizeConfig.requestMatchers("/","/login","/error","api/**").permitAll();
                             authorizeConfig.requestMatchers("/candidate/**").hasAuthority(Role.CANDIDATE.name());
                             authorizeConfig.requestMatchers("/employer/**").hasAuthority(Role.EMPLOYER.name());

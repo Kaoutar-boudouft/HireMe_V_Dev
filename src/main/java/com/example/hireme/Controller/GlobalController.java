@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 @RequiredArgsConstructor
@@ -18,13 +19,16 @@ public class GlobalController {
     private final OfferCategoryService offerCategoryService;
     private final CompanyService companyService;
     private final JobOfferService jobOfferService;
+    private final BlogService blogService;
     private final MediaService mediaService;
     @GetMapping("/")
-    public String getHomePage(Authentication authentication, Model model){
+    public String getHomePage(Authentication authentication, Model model, Locale locale){
         List<Country> countries = countryService.getActiveCountries();
         List<OfferCategory> categories = offerCategoryService.getAllCategories();
         List<Company> toCompanies = companyService.getTopCompaniesByJobOffersCount();
         List<JobOffer> jobOffers = jobOfferService.getRecentJobs();
+        System.out.println("kaoutar"+locale.getLanguage().toString());
+        List<Blog> blogs = blogService.findRecentBlogs(locale.getLanguage().toString());
         User user;
         if (authentication!=null){
             user = (User) authentication.getPrincipal();
@@ -37,6 +41,7 @@ public class GlobalController {
         model.addAttribute("type","home");
         model.addAttribute("companies",toCompanies);
         model.addAttribute("jobs",jobOffers);
+        model.addAttribute("blogs",blogs);
         model.addAttribute("mediaService",mediaService);
         model.addAttribute("now", LocalDateTime.now());
         model.addAttribute("cronoUnit", ChronoUnit.DAYS);

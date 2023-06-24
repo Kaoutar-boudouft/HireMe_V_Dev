@@ -66,4 +66,8 @@ public class BlogService {
         blogRepository.delete(blog);
     }
 
+    public List<Blog> findRecentBlogs(String language){
+        return blogRepository.findRecentBlogs(language);
+    }
+
 }
