@@ -57,16 +57,27 @@ public class LocationsManagementController {
 
 
 
-  /*  @GetMapping("/delete/{contact_id}")
-    public String deleteNewsLetter(@PathVariable("contact_id") Long contact_id,
+    @GetMapping("/change_state/{country_id}")
+    public String changeCountryState(@PathVariable("country_id") Long country_id,
                                 RedirectAttributes redirectAttributes,Locale locale,Model model){
-        Optional<Support> support = supportService.findById(contact_id);
-        if (support.isPresent()){
-            supportService.remove(support.get());
+        Optional<Country> country = countryService.findById(country_id);
+        if (country.isPresent()){
+            countryService.changeCountryState(country.get());
             redirectAttributes.addFlashAttribute("successMessage",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
         }
-        return "redirect:/admin/supports";
-    }*/
+        return "redirect:/admin/countries";
+    }
+
+    @GetMapping("/{country_id}/cities/change_state/{city_id}")
+    public String changeCityState(@PathVariable("country_id") Long country_id,@PathVariable("city_id") Long city_id,
+                                     RedirectAttributes redirectAttributes,Locale locale,Model model){
+        Optional<City> city = cityService.findById(city_id);
+        if (city.isPresent()){
+            cityService.changeCityState(city.get());
+            redirectAttributes.addFlashAttribute("successMessage",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
+        }
+        return "redirect:/admin/countries/"+country_id+"/cities";
+    }
 
 
 }
