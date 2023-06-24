@@ -25,6 +25,8 @@ public class JobOfferService {
     public List<JobOffer> getAll(){
         return jobOfferRepository.findAll();
     }
+
+    public Long countAll(){return jobOfferRepository.count();}
     public JobOffer create(CreateUpdateJobRequest createUpdateJobRequest, Long company_id){
         JobOffer jobOffer = new JobOffer();
         jobOffer.setActive(false);

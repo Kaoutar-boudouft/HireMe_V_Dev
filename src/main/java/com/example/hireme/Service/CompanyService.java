@@ -24,6 +24,9 @@ public class CompanyService {
     public List<Company> getAll(){
         return companyRepository.findAll();
     }
+    public Long countAll(){
+        return companyRepository.count();
+    }
 
     public List<Company> getCompaniesByActive(Boolean active){
         return companyRepository.findByActive(active);

@@ -19,6 +19,9 @@ public class BlogService {
     public List<Blog> getAll(){
         return blogRepository.findAll();
     }
+    public Long countAll(){
+        return blogRepository.count();
+    }
 
     public Optional<Blog> findById(Long blog_id){
         return blogRepository.findById(blog_id);

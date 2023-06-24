@@ -24,6 +24,9 @@ public class CandidateProfileService {
     public List<CandidateProfile> getAll(){
         return candidateProfileRepository.findAll();
     }
+    public Long countAll(){
+        return candidateProfileRepository.count();
+    }
 
     public CandidateProfile createNewCandidateProfile(CandidateRegisterRequest candidateRegisterRequest,User user){
         CandidateProfile candidateProfilecheck = this.candidateProfileRepository.findByUserId(user.getId());

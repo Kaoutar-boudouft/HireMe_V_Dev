@@ -17,6 +17,9 @@ public class OfferCategoryService {
     public List<OfferCategory> getAllCategories(){
         return offerCategoryRepository.findAll();
     }
+    public Long countAll(){
+        return offerCategoryRepository.count();
+    }
 
     public Optional<OfferCategory> findById(Long category_id){
         return offerCategoryRepository.findById(category_id);
