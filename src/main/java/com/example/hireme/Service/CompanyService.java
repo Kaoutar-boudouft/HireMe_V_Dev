@@ -36,6 +36,11 @@ public class CompanyService {
     public Optional<Company> findById(Long company_id){
         return companyRepository.findById(company_id);
     }
+
+    public void changeState(Company company){
+        company.setActive(!company.getActive());
+        companyRepository.save(company);
+    }
     public Company getById(Long company_id){
         return companyRepository.getReferenceById(company_id);
     }

@@ -439,6 +439,15 @@ public class UserManagementController {
 
     }
 
+    @GetMapping("/{user_id}/change_state")
+    public String changeUserState(@PathVariable("user_id") Long user_id,
+                                     RedirectAttributes redirectAttributes,Locale locale,Model model){
+        User user = userService.getById(user_id);
+            userService.changeState(user);
+            redirectAttributes.addAttribute("successMessage",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
+        return "redirect:/admin/users/"+user.getRole().name().toLowerCase();
+    }
+
     @GetMapping("/delete/{user_id}")
     public String deleteUser(@PathVariable("user_id") Long user_id,
                                 RedirectAttributes redirectAttributes,Locale locale,Model model){

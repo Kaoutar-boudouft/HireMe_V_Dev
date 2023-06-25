@@ -106,7 +106,7 @@ public class CompanyManagementController {
 
     public Model getCommAttr(Model model,Company company,UpdateEmployerCompanyRequest updateEmployerCompanyRequest, User user){
         List<Country> countries = countryService.getActiveCountries();
-        List<City> cities = cityService.getActiveCitiesByCountry(company.getId());
+        List<City> cities = cityService.getActiveCitiesByCountry(company.getCity().getCountry().getId());
         Media media = mediaService.getMedia("Company",
                 company.getId(),"company_logo");
         model.addAttribute("user",user);
@@ -117,6 +117,17 @@ public class CompanyManagementController {
         model.addAttribute("type","dashboard");
         model.addAttribute("updateEmployerCompanyRequest",updateEmployerCompanyRequest);
         return model;
+    }
+
+    @GetMapping("/{company_id}/change_state")
+    public String changeCompanyState(@PathVariable("company_id") Long company_id,
+                                RedirectAttributes redirectAttributes,Locale locale,Model model){
+        Optional<Company> company = companyService.findById(company_id);
+        if (company.isPresent()){
+            companyService.changeState(company.get());
+            redirectAttributes.addAttribute("successMessage",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
+        }
+        return "redirect:/admin/companies/all";
     }
 
     @GetMapping("/delete/{company_id}")

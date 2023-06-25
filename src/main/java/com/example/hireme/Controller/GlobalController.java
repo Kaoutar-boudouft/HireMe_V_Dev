@@ -49,10 +49,10 @@ public class GlobalController {
     }
 
 
-    @GetMapping("/error")
-    public String getErrorPage(){
-        return "error";
-    }
+//    @GetMapping("/error")
+//    public String getErrorPage(){
+//        return "error";
+//    }
 
 
 }

@@ -132,6 +132,10 @@ public class UserService  implements UserDetailsService{
         return userRepository.findByRole(role);
     }
 
+        public void changeState(User user){
+        user.setActive(!user.getActive());
+        userRepository.save(user);
+    }
     public void removeUser(User user){
         if (user.getRole().equals(Role.CANDIDATE)){
             mediaService.deleteMedia(new Media("Candidate",user.getProfile().getId(),"cv"));
