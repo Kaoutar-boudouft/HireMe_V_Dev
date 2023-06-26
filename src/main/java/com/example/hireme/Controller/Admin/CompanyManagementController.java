@@ -2,6 +2,7 @@ package com.example.hireme.Controller.Admin;
 
 import com.example.hireme.Model.Entity.*;
 import com.example.hireme.MultiLanguages.LanguageConfig;
+import com.example.hireme.Requests.Admin.RefuseCompanyRequest;
 import com.example.hireme.Requests.Admin.UpdateAdminProfileRequest;
 import com.example.hireme.Requests.Candidate.UpdateCandidateProfileRequest;
 import com.example.hireme.Requests.EmailUpdateRequest;
@@ -117,6 +118,38 @@ public class CompanyManagementController {
         model.addAttribute("type","dashboard");
         model.addAttribute("updateEmployerCompanyRequest",updateEmployerCompanyRequest);
         return model;
+    }
+
+    @GetMapping("/{company_id}/view")
+    public String getCompanyDetails(@PathVariable("company_id") Long company_id,Model model){
+        Optional<Company> company = companyService.findById(company_id);
+        if (company.isPresent() && company.get().getActive().equals(false)){
+            model.addAttribute("company",company.get());
+            model.addAttribute("refuseCompanyRequest",new RefuseCompanyRequest());
+            return "Admin/company_details";
+        }
+        return "redirect:/admin/companies/all";
+    }
+
+    @GetMapping("/{company_id}/accept")
+    public String acceptCompany(@PathVariable("company_id") Long company_id,Model model,RedirectAttributes redirectAttributes,Locale locale){
+        Optional<Company> company = companyService.findById(company_id);
+        if (company.isPresent()){
+            companyService.changeState(company.get());
+            userService.changeState(company.get().getEmployerProfile().getUser());
+            //send sms to employer
+            redirectAttributes.addAttribute("successMessage",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
+        }
+        return "redirect:/admin/companies/all";
+    }
+
+    @PostMapping("/{company_id}/refuse")
+    public String refuseCompany(@PathVariable("company_id") Long company_id, Model model,RefuseCompanyRequest refuseCompanyRequest){
+        Optional<Company> company = companyService.findById(company_id);
+        if (company.isPresent()){
+            //send sms to employer
+        }
+        return "redirect:/admin/companies/to_validate";
     }
 
     @GetMapping("/{company_id}/change_state")
