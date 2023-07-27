@@ -41,6 +41,7 @@ public class News_LetterManagementController {
         model.addAttribute("user",user);
         model.addAttribute("newsLetters",newsLetters);
         model.addAttribute("type","dashboard");
+        model.addAttribute("selected", "news-letters");
         return "Admin/news_letters";
     }
 
@@ -121,6 +122,7 @@ public class News_LetterManagementController {
         model.addAttribute("createUpdateNewsLetterRequest",createUpdateNewsLetterRequest);
         model.addAttribute("type","dashboard");
         model.addAttribute("contact_id",contact_id);
+        model.addAttribute("selected", "news-letters");
         return model;
     }
 

@@ -37,6 +37,7 @@ public class TagManagementController {
         model.addAttribute("user",user);
         model.addAttribute("tags",tags);
         model.addAttribute("type","dashboard");
+        model.addAttribute("selected", "settings");
         return "Admin/tags";
     }
 
@@ -117,6 +118,7 @@ public class TagManagementController {
         model.addAttribute("createUpdateTagRequest",createUpdateTagRequest);
         model.addAttribute("type","dashboard");
         model.addAttribute("tag_id",tag_id);
+        model.addAttribute("selected", "settings");
         return model;
     }
 

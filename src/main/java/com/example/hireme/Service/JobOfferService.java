@@ -25,6 +25,9 @@ public class JobOfferService {
     public List<JobOffer> getAll(){
         return jobOfferRepository.findAll();
     }
+    public List<?> getInsights(){
+        return jobOfferRepository.jobsInsights();
+    }
 
     public Long countAll(){return jobOfferRepository.count();}
     public JobOffer create(CreateUpdateJobRequest createUpdateJobRequest, Long company_id){

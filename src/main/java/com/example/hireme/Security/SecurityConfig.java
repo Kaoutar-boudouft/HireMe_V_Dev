@@ -20,8 +20,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests (
                         authorizeConfig -> {
                             authorizeConfig.requestMatchers("/static/**","/assets/**","/sass/**","/scss/**","/Fragments/**").permitAll();
-                            authorizeConfig.requestMatchers("/registration/**","/jobs/**","/blogs/**").permitAll();
-                            authorizeConfig.requestMatchers("/","/login","/error","api/**").permitAll();
+                            authorizeConfig.requestMatchers("/registration/**","/login").anonymous();
+                            authorizeConfig.requestMatchers("/jobs/**","/blogs/**").permitAll();
+                            authorizeConfig.requestMatchers("/","/error","api/**").permitAll();
                             authorizeConfig.requestMatchers("/candidate/**").hasAuthority(Role.CANDIDATE.name());
                             authorizeConfig.requestMatchers("/employer/**").hasAuthority(Role.EMPLOYER.name());
                             authorizeConfig.requestMatchers("/admin/**").hasAuthority(Role.ADMIN.name());

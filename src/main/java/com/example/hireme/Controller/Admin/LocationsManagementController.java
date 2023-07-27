@@ -42,6 +42,7 @@ public class LocationsManagementController {
         model.addAttribute("user",user);
         model.addAttribute("countries",countries);
         model.addAttribute("type","dashboard");
+        model.addAttribute("selected", "settings");
         return "Admin/countries";
     }
 
@@ -52,6 +53,7 @@ public class LocationsManagementController {
         model.addAttribute("user",user);
         model.addAttribute("cities",cities);
         model.addAttribute("type","dashboard");
+        model.addAttribute("selected", "settings");
         return "Admin/cities";
     }
 
@@ -61,6 +63,7 @@ public class LocationsManagementController {
     public String changeCountryState(@PathVariable("country_id") Long country_id,
                                 RedirectAttributes redirectAttributes,Locale locale,Model model){
         Optional<Country> country = countryService.findById(country_id);
+        model.addAttribute("selected", "settings");
         if (country.isPresent()){
             countryService.changeCountryState(country.get());
             redirectAttributes.addFlashAttribute("successMessage",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
@@ -72,6 +75,7 @@ public class LocationsManagementController {
     public String changeCityState(@PathVariable("country_id") Long country_id,@PathVariable("city_id") Long city_id,
                                      RedirectAttributes redirectAttributes,Locale locale,Model model){
         Optional<City> city = cityService.findById(city_id);
+        model.addAttribute("selected", "settings");
         if (city.isPresent()){
             cityService.changeCityState(city.get());
             redirectAttributes.addFlashAttribute("successMessage",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));

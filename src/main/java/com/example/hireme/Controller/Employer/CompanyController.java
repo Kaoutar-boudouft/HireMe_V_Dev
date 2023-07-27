@@ -85,6 +85,7 @@ public class CompanyController {
         model.addAttribute("cities",cities);
         model.addAttribute("media",media);
         model.addAttribute("type", "profile");
+        model.addAttribute("selected", "company");
         return model;
     }
 }

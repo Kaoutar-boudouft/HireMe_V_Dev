@@ -44,6 +44,7 @@ public class AppliesController {
         model.addAttribute("totalPages",totalPages);
         model.addAttribute("now", LocalDateTime.now());
         model.addAttribute("cronoUnit", ChronoUnit.DAYS);
+        model.addAttribute("selected", "applies");
         return "Candidate/applies";
     }
 }

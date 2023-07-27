@@ -18,6 +18,7 @@ public class AdminManagementController {
     private final OfferCategoryService offerCategoryService;
     private final CompanyService companyService;
     private final BlogService blogService;
+    private final NewsLetterService newsLetterService;
     @GetMapping("/dashboard")
     public String getCandidateProfile(Authentication authentication, Model model){
         User user = (User) authentication.getPrincipal();
@@ -26,13 +27,16 @@ public class AdminManagementController {
         Long categoriesCount = offerCategoryService.countAll();
         Long companyCount = companyService.countAll();
         Long blogCount = blogService.countAll();
+        Long newsLettersCount = newsLetterService.countAll();
         model.addAttribute("jobCount",jobsCount);
         model.addAttribute("candidatesCount",candidatesCount);
         model.addAttribute("categoriesCount",categoriesCount);
         model.addAttribute("companyCount",companyCount);
         model.addAttribute("blogCount",blogCount);
-        model.addAttribute("user",user);
+        model.addAttribute("blogCount",blogCount);
+        model.addAttribute("newsLettersCount",newsLettersCount);
         model.addAttribute("type","dashboard");
+        model.addAttribute("selected", "dashboard");
         return "Admin/dashboard";
     }
 }

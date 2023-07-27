@@ -20,6 +20,9 @@ public class NewsLetterService {
         return newsLetterRepository.findAll();
     }
 
+    public Long countAll(){return newsLetterRepository.count();}
+
+
     public Optional<NewsLetter> findById(Long news_id){
         return newsLetterRepository.findById(news_id);
     }

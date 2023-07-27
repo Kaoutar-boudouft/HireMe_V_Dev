@@ -54,6 +54,7 @@ public class JobController {
         model.addAttribute("cronoUnit",ChronoUnit.DAYS);
         model.addAttribute("page",page_number);
         model.addAttribute("totalPages",totalPages);
+        model.addAttribute("selected", "jobs");
         return "Employer/jobs";
     }
 
@@ -66,6 +67,7 @@ public class JobController {
             if (checkUserAuthorityOnJob){
                 CreateUpdateJobRequest createUpdateJobRequest = jobOfferService.prepareUpdateJobRequest(job_id);
                 model = getCommunAttr(model,createUpdateJobRequest,user);
+                model.addAttribute("selected", "jobs");
                 return "Employer/update_job";
             }
             else {
@@ -92,6 +94,7 @@ public class JobController {
                     return "Employer/update_job";
                 }
                 model = getCommunAttr(model,createUpdateJobRequest,user);
+                model.addAttribute("selected", "jobs");
                 createUpdateJobRequest.setId(job_id);
                 jobOfferService.updateJobOffer(createUpdateJobRequest);
                 redirectAttributes.addFlashAttribute("successMessage",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
@@ -111,6 +114,7 @@ public class JobController {
         CreateUpdateJobRequest createUpdateJobRequest = new CreateUpdateJobRequest();
         User user = (User) authentication.getPrincipal();
         model = getCommunAttr(model, createUpdateJobRequest,user);
+        model.addAttribute("selected", "new-jobs");
         return "Employer/new_job";
     }
 
@@ -119,6 +123,7 @@ public class JobController {
                                  BindingResult bindingResult, RedirectAttributes redirectAttributes, Locale locale, Model model) {
         User user = (User) authentication.getPrincipal();
         model = getCommunAttr(model, createUpdateJobRequest,user);
+        model.addAttribute("selected", "new-jobs");
         if (bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("error", bindingResult);
             redirectAttributes.addFlashAttribute("createJobRequest", createUpdateJobRequest);
@@ -137,6 +142,7 @@ public class JobController {
             redirectAttributes.addFlashAttribute("successMessage",languageConfig.messageSource().getMessage("job_status_changed",new Object[] {}, locale));
         }
         else {
+            model.addAttribute("selected", "jobs");
             redirectAttributes.addFlashAttribute("error","job with this id doesn't exist");
         }
         return "redirect:/employer/jobs";
@@ -161,6 +167,7 @@ public class JobController {
         model.addAttribute("page",page_number);
         model.addAttribute("totalPages",totalPages);
         model.addAttribute("job",jobOffer);
+        model.addAttribute("selected", "jobs");
         return "Employer/job_candidatures";
     }
 
@@ -172,6 +179,7 @@ public class JobController {
         model.addAttribute("mediaService", mediaService);
         model.addAttribute("type", "profile");
         model.addAttribute("candidateProfile", candidateProfile);
+        model.addAttribute("selected", "jobs");
         return "Employer/candidate_details";
     }
 

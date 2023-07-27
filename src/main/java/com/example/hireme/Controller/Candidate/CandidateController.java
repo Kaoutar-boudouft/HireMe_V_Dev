@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Locale;
 
@@ -38,6 +39,7 @@ public class CandidateController {
                 candidateProfileService.getCandidateProfile(user.getId()));
         model = getCommunAttr(model,updateCandidateProfileRequest,user);
         model.addAttribute("updateCandidateProfileRequest",updateCandidateProfileRequest);
+        model.addAttribute("selected", "profile");
         return "Candidate/profile";
     }
 
@@ -83,6 +85,7 @@ public class CandidateController {
         model.addAttribute("cities",cities);
         model.addAttribute("media",media);
         model.addAttribute("type", "profile");
+        model.addAttribute("selected", "profile");
         return model;
     }
 }

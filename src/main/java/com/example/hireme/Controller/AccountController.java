@@ -41,6 +41,8 @@ public class AccountController {
         model = getCommunAttr(model,user);
         model.addAttribute("emailUpdateRequest",emailUpdateRequest);
         model.addAttribute("passwordUpdateRequest",passwordUpdateRequest);
+        model.addAttribute("selected", "account");
+
         return "account";
     }
 
@@ -95,6 +97,7 @@ public class AccountController {
     public Model getCommunAttr(Model model, User user){
         model.addAttribute("user",user);
         model.addAttribute("type", "profile");
+        model.addAttribute("selected", "account");
         return model;
     }
 

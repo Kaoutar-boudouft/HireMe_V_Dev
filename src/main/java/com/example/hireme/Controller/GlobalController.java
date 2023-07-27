@@ -1,6 +1,8 @@
 package com.example.hireme.Controller;
 
 import com.example.hireme.Model.Entity.*;
+import com.example.hireme.Model.Role;
+import com.example.hireme.SMS.MessagingService;
 import com.example.hireme.Service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -21,6 +23,7 @@ public class GlobalController {
     private final JobOfferService jobOfferService;
     private final BlogService blogService;
     private final MediaService mediaService;
+
     @GetMapping("/")
     public String getHomePage(Authentication authentication, Model model, Locale locale){
         List<Country> countries = countryService.getActiveCountries();
@@ -45,6 +48,7 @@ public class GlobalController {
         model.addAttribute("mediaService",mediaService);
         model.addAttribute("now", LocalDateTime.now());
         model.addAttribute("cronoUnit", ChronoUnit.DAYS);
+
         return "home";
     }
 

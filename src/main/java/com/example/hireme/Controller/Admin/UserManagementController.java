@@ -50,6 +50,7 @@ public class UserManagementController {
     @GetMapping("/{type}")
     public String getUsersPage(@PathVariable("type") String type, Authentication authentication, Model model){
         User user = (User) authentication.getPrincipal();
+        model.addAttribute("selected", "users");
         if (type.equals(Role.CANDIDATE.name().toLowerCase())) {
             List<CandidateProfile> profiles = candidateProfileService.getAll();
             model.addAttribute("profiles",profiles);
@@ -185,6 +186,7 @@ public class UserManagementController {
         model.addAttribute("media",media);
         model.addAttribute("type","dashboard");
         model.addAttribute("user_id",user_id);
+        model.addAttribute("selected", "users");
         return model;
     }
 
@@ -280,6 +282,8 @@ public class UserManagementController {
         model.addAttribute("user",user);
         model.addAttribute("type","dashboard");
         model.addAttribute("user_id",user_id);
+        model.addAttribute("selected", "users");
+
         return model;
     }
 
@@ -383,6 +387,7 @@ public class UserManagementController {
         model.addAttribute("media",media);
         model.addAttribute("type","dashboard");
         model.addAttribute("user_id",user_id);
+        model.addAttribute("selected", "users");
         return model;
     }
 
@@ -397,6 +402,8 @@ public class UserManagementController {
         model.addAttribute("cities",cities);
         model.addAttribute("user",user);
         model.addAttribute("type","dashboard");
+        model.addAttribute("selected", "users");
+
         return "Admin/create_admin";
     }
 
@@ -413,6 +420,7 @@ public class UserManagementController {
         model.addAttribute("cities",cities);
         model.addAttribute("user",user);
         model.addAttribute("type","dashboard");
+        model.addAttribute("selected", "users");
         if (bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("error", bindingResult);
             return "Admin/create_admin";

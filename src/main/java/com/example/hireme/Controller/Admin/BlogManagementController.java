@@ -44,6 +44,7 @@ public class BlogManagementController {
         model.addAttribute("user",user);
         model.addAttribute("blogs",blogs);
         model.addAttribute("type","dashboard");
+        model.addAttribute("selected", "blogs");
         return "Admin/blogs";
     }
 
@@ -161,6 +162,8 @@ public class BlogManagementController {
         model.addAttribute("media",media);
         model.addAttribute("blog_id",blog_id);
         model.addAttribute("tags",tags);
+        model.addAttribute("selected", "blogs");
+
         return model;
     }
 

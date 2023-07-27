@@ -14,6 +14,9 @@ import java.util.List;
 public interface JobOfferRepository extends JpaRepository<JobOffer,Long> {
     List<JobOffer> findByCompanyId(Long company_id);
 
+    @Query(value = "select count(jobs.id),companies.name from jobs_offers jobs,companies where jobs.company_id=companies.id group by companies.name", nativeQuery = true)
+    List<?> jobsInsights();
+
     @Query(value = "select * from jobs_offers jobs where jobs.company_id=?1 limit ?2,?3", nativeQuery = true)
     List<JobOffer> findByCompanyIdWithPagination(Long company_id,long start,long end);
 

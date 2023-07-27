@@ -41,6 +41,7 @@ public class SupportManagementController {
         model.addAttribute("user",user);
         model.addAttribute("supports",supports);
         model.addAttribute("type","dashboard");
+        model.addAttribute("selected", "settings");
         return "Admin/supports";
     }
 
@@ -121,6 +122,7 @@ public class SupportManagementController {
         model.addAttribute("createUpdateSupportRequest",createUpdateSupportRequest);
         model.addAttribute("type","dashboard");
         model.addAttribute("contact_id",contact_id);
+        model.addAttribute("selected", "settings");
         return model;
     }
 

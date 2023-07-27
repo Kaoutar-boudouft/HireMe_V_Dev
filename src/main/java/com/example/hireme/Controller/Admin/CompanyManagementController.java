@@ -8,6 +8,7 @@ import com.example.hireme.Requests.Candidate.UpdateCandidateProfileRequest;
 import com.example.hireme.Requests.EmailUpdateRequest;
 import com.example.hireme.Requests.Employer.UpdateEmployerCompanyRequest;
 import com.example.hireme.Requests.PasswordUpdateRequest;
+import com.example.hireme.SMS.MessagingService;
 import com.example.hireme.Service.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -40,6 +41,7 @@ public class CompanyManagementController {
     private final VerificationTokenService verificationTokenService;
     private final FileUploadService fileUploadService;
     private final LanguageConfig languageConfig;
+    private final MessagingService messagingService;
 
     @GetMapping("/{type}")
     public String getCompaniesPage(@PathVariable("type") String type, Authentication authentication, Model model){
@@ -57,6 +59,7 @@ public class CompanyManagementController {
         }
         model.addAttribute("user",user);
         model.addAttribute("type","dashboard");
+        model.addAttribute("selected","companies");
         return "Admin/companies";
     }
 
@@ -84,7 +87,7 @@ public class CompanyManagementController {
                 redirectAttributes.addFlashAttribute("updateEmployerCompanyRequest", updateEmployerCompanyRequest);
                 return "Admin/update_company";
             }
-            companyService.updateEmployerCompany(updateEmployerCompanyRequest,company.get().getEmployerProfile().getId());
+            companyService.updateEmployerCompany(updateEmployerCompanyRequest,company.get().getEmployerProfile().getUser().getId());
             try {
                 Media checkMedia = mediaService.getMedia("Company", company.get().getId(), "company_logo");
                 Media media;
@@ -117,15 +120,17 @@ public class CompanyManagementController {
         model.addAttribute("media",media);
         model.addAttribute("type","dashboard");
         model.addAttribute("updateEmployerCompanyRequest",updateEmployerCompanyRequest);
+        model.addAttribute("selected", "companies");
         return model;
     }
 
     @GetMapping("/{company_id}/view")
     public String getCompanyDetails(@PathVariable("company_id") Long company_id,Model model){
         Optional<Company> company = companyService.findById(company_id);
-        if (company.isPresent() && company.get().getActive().equals(false)){
+        if (company.isPresent()){
             model.addAttribute("company",company.get());
             model.addAttribute("refuseCompanyRequest",new RefuseCompanyRequest());
+            model.addAttribute("selected", "companies");
             return "Admin/company_details";
         }
         return "redirect:/admin/companies/all";
@@ -137,17 +142,17 @@ public class CompanyManagementController {
         if (company.isPresent()){
             companyService.changeState(company.get());
             userService.changeState(company.get().getEmployerProfile().getUser());
-            //send sms to employer
+            messagingService.sendSms("Hire Me !","212"+company.get().getEmployerProfile().getMobile_number(),languageConfig.messageSource().getMessage("company_approved",new Object[] {}, locale));
             redirectAttributes.addAttribute("successMessage",languageConfig.messageSource().getMessage("update",new Object[] {}, locale));
         }
         return "redirect:/admin/companies/all";
     }
 
     @PostMapping("/{company_id}/refuse")
-    public String refuseCompany(@PathVariable("company_id") Long company_id, Model model,RefuseCompanyRequest refuseCompanyRequest){
+    public String refuseCompany(@PathVariable("company_id") Long company_id, Model model,RefuseCompanyRequest refuseCompanyRequest,Locale locale){
         Optional<Company> company = companyService.findById(company_id);
         if (company.isPresent()){
-            //send sms to employer
+            messagingService.sendSms("Hire Me !","212"+company.get().getEmployerProfile().getMobile_number(),languageConfig.messageSource().getMessage("company_rejected",new Object[] {}, locale)+"\n"+"Reason : "+refuseCompanyRequest.getCause());
         }
         return "redirect:/admin/companies/to_validate";
     }

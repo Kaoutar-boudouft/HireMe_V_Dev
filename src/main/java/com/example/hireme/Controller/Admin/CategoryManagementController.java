@@ -45,6 +45,7 @@ public class CategoryManagementController {
         model.addAttribute("user",user);
         model.addAttribute("categories",categories);
         model.addAttribute("type","dashboard");
+        model.addAttribute("selected", "settings");
         return "Admin/categories";
     }
 
@@ -125,6 +126,7 @@ public class CategoryManagementController {
         model.addAttribute("createUpdateCategoryRequest",createUpdateCategoryRequest);
         model.addAttribute("type","dashboard");
         model.addAttribute("category_id",category_id);
+        model.addAttribute("selected", "settings");
         return model;
     }
 

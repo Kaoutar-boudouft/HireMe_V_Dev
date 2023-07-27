@@ -157,4 +157,8 @@ public class UserService  implements UserDetailsService{
         userRepository.delete(user);
 
     }
+
+    public Integer getCountByRole(Role role){
+        return  userRepository.countAllByRole(role);
+    }
 }

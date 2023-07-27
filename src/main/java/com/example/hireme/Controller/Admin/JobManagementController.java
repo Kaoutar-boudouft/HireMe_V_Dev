@@ -45,6 +45,7 @@ public class JobManagementController {
         model.addAttribute("user",user);
         model.addAttribute("jobs",jobOffers);
         model.addAttribute("type","dashboard");
+        model.addAttribute("selected", "jobs");
         return "Admin/jobs";
     }
 
@@ -126,6 +127,7 @@ public class JobManagementController {
         model.addAttribute("companies",companies);
         model.addAttribute("categories",categories);
         model.addAttribute("job_id",job_id);
+        model.addAttribute("selected", "jobs");
         return model;
     }
 

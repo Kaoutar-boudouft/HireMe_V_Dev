@@ -50,6 +50,7 @@ public class EmployerController {
     public Model getCommunAttr(Model model,User user){
         model.addAttribute("user",user);
         model.addAttribute("type", "profile");
+        model.addAttribute("selected", "profile");
         return model;
     }
 
